@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('title', 'Đăng nhập - KÜCHEN ENTERPRISE & GERMAN PRECISION')
-@section('body-class', 'antigravity-theme')
 
 @section('content')
 <div class="container py-3 py-lg-4 position-relative z-2">
@@ -9,9 +8,9 @@
     <div class="text-center mb-4">
         <div class="d-inline-flex align-items-center gap-2 mb-2">
             <span class="brand-badge fs-6 px-3 py-1 shadow-sm">KÜCHEN</span>
-            <span class="fw-bold fs-4 text-white font-monospace tracking-wide">ENTERPRISE PORTAL</span>
+            <span class="fw-bold fs-4 text-dark font-monospace tracking-wide">ENTERPRISE PORTAL</span>
         </div>
-        <p class="text-white-50 small mb-0">Hệ sinh thái điều phối đơn hàng & kho vận tiêu chuẩn công nghệ Đức</p>
+        <p class="text-muted small mb-0">Hệ sinh thái điều phối đơn hàng & kho vận tiêu chuẩn công nghệ Đức</p>
     </div>
 
     <div class="row g-4 align-items-stretch justify-content-center">
@@ -43,7 +42,7 @@
                         <div class="car-ambient-glow"></div>
 
                         <div class="car-graphic-container mx-auto position-relative">
-                            <!-- SVG Vector Siêu Xe Thể Thao Đức (Đường nét khí động học tinh xảo, mâm đúc thể thao, đèn pha LED rực rỡ) -->
+                            <!-- SVG Vector Siêu Xe Thể Thao Đức -->
                             <svg class="car-svg-render w-100 h-auto" viewBox="0 0 540 220" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <defs>
                                     <!-- Sơn Xe Thể Thao Nardo Metallic Grey & Carbon -->
@@ -187,27 +186,27 @@
         </div>
 
         <!-- ========================================================
-             CỘT 2: FORM ĐĂNG NHẬP CHUẨN MỰC & VALIDATE CHẶT CHẼ
+             CỘT 2: FORM ĐĂNG NHẬP SẠCH SẼ, CHUẨN MỰC TRẮNG XANH
              (Có validate password/email chuẩn, 1-Click Test Vai Trò)
              ======================================================== -->
         <div class="col-12 col-xl-5 col-lg-6">
             <div class="tilt-perspective-container h-100">
-                <div class="login-3d-dark-card h-100 card border-0 rounded-4 p-4 p-md-5 d-flex flex-column justify-content-between position-relative shadow-2xl" id="kuchenLoginCard">
+                <div class="login-3d-clean-card h-100 card border-0 rounded-4 p-4 p-md-5 d-flex flex-column justify-content-between position-relative shadow-sm" id="kuchenLoginCard">
                     <!-- Specular Glare cho Login Card -->
                     <div class="card-specular-glare" id="loginCardGlare"></div>
 
                     <div class="position-relative z-3">
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                            <h5 class="fw-bold text-white mb-0">Đăng nhập tài khoản</h5>
-                            <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-50 px-2 py-1 small">
+                            <h5 class="fw-bold text-dark mb-0">Đăng nhập tài khoản</h5>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 small">
                                 <i class="bi bi-shield-lock me-1"></i>Xác thực bảo mật
                             </span>
                         </div>
-                        <p class="text-white-50 small mb-4">Nhập thông tin nhân sự hoặc sử dụng phím tắt kiểm thử nhanh</p>
+                        <p class="text-muted small mb-4">Nhập thông tin nhân sự hoặc sử dụng phím tắt kiểm thử nhanh</p>
 
                         <!-- Thông báo lỗi chung từ Server nếu có -->
                         @if($errors->any() && !$errors->has('email') && !$errors->has('password'))
-                            <div class="alert alert-danger py-2 px-3 small border-0 rounded-3 mb-3 bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25">
+                            <div class="alert alert-danger py-2 px-3 small border-0 rounded-3 mb-3">
                                 <i class="bi bi-exclamation-triangle-fill me-1"></i> {{ $errors->first() }}
                             </div>
                         @endif
@@ -216,15 +215,15 @@
                             @csrf
                             <!-- Input Tên đăng nhập / Email làm việc với Validation chặt chẽ -->
                             <div class="mb-3">
-                                <label for="email" class="form-label small fw-semibold text-white-50">Tài khoản Email (*)</label>
+                                <label for="email" class="form-label small fw-semibold text-secondary">Tài khoản Email (*)</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-dark border-secondary border-opacity-50 text-white-50 border-end-0">
+                                    <span class="input-group-text bg-light border-end-0 text-muted">
                                         <i class="bi bi-envelope-at"></i>
                                     </span>
                                     <input type="email" 
                                            name="email" 
                                            id="email" 
-                                           class="form-control bg-dark text-white border-secondary border-opacity-50 border-start-0 @error('email') is-invalid @enderror" 
+                                           class="form-control border-start-0 @error('email') is-invalid @enderror" 
                                            placeholder="nhanvien@kuchen.vn" 
                                            value="{{ old('email', 'sale@kuchen.vn') }}" 
                                            required 
@@ -244,23 +243,23 @@
                             <!-- Input Mật khẩu với Validation & Nút Ẩn/Hiện Eye Toggle -->
                             <div class="mb-3">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label for="password" class="form-label small fw-semibold text-white-50 mb-0">Mật khẩu (*)</label>
-                                    <span class="small text-white-50" style="font-size: 0.75rem;">Mặc định: password</span>
+                                    <label for="password" class="form-label small fw-semibold text-secondary mb-0">Mật khẩu (*)</label>
+                                    <span class="small text-muted" style="font-size: 0.75rem;">Mặc định: password</span>
                                 </div>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-dark border-secondary border-opacity-50 text-white-50 border-end-0">
+                                    <span class="input-group-text bg-light border-end-0 text-muted">
                                         <i class="bi bi-key"></i>
                                     </span>
                                     <input type="password" 
                                            name="password" 
                                            id="password" 
-                                           class="form-control bg-dark text-white border-secondary border-opacity-50 border-start-0 border-end-0 @error('password') is-invalid @enderror" 
+                                           class="form-control border-start-0 border-end-0 @error('password') is-invalid @enderror" 
                                            placeholder="Nhập mật khẩu..." 
                                            value="password" 
                                            required
                                            minlength="6"
                                            autocomplete="current-password">
-                                    <button class="btn btn-outline-secondary border-secondary border-opacity-50 text-white-50" type="button" id="togglePasswordBtn" title="Ẩn/Hiện mật khẩu">
+                                    <button class="btn btn-outline-secondary border text-muted" type="button" id="togglePasswordBtn" title="Ẩn/Hiện mật khẩu">
                                         <i class="bi bi-eye" id="togglePasswordIcon"></i>
                                     </button>
                                     @error('password')
@@ -276,8 +275,8 @@
 
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <div class="form-check">
-                                    <input class="form-check-input bg-dark border-secondary" type="checkbox" name="remember" id="remember" checked>
-                                    <label class="form-check-label small text-white-50" for="remember">
+                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" checked>
+                                    <label class="form-check-label small text-muted" for="remember">
                                         Ghi nhớ phiên làm việc
                                     </label>
                                 </div>
@@ -290,23 +289,23 @@
                         </form>
 
                         <div class="position-relative my-4 text-center">
-                            <hr class="border-secondary border-opacity-25">
-                            <span class="position-absolute top-50 start-50 translate-middle px-3 small text-white-50 fw-semibold bg-dark-card" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                            <hr class="text-muted opacity-25">
+                            <span class="position-absolute top-50 start-50 translate-middle px-3 small text-muted fw-semibold bg-white" style="font-size: 0.72rem; letter-spacing: 0.5px;">
                                 KIỂM THỬ NHANH VAI TRÒ (1-CLICK)
                             </span>
                         </div>
 
                         <!-- Cụm Kiểm Thử Nhanh 1-Click Độc Lập Cho Người Chấm/Test -->
                         <div class="d-grid gap-2">
-                            <a href="{{ route('user.switch', ['role' => 'sale', 'redirect' => 'orders']) }}" class="btn btn-outline-primary btn-sm d-flex justify-content-between align-items-center py-2 px-3 border-opacity-50">
+                            <a href="{{ route('user.switch', ['role' => 'sale', 'redirect' => 'orders']) }}" class="btn btn-outline-primary btn-sm d-flex justify-content-between align-items-center py-2 px-3">
                                 <span><i class="bi bi-person-workspace me-2 text-primary"></i>Đăng nhập nhanh với vai trò <strong>SALE</strong></span>
                                 <span class="badge bg-primary">sale</span>
                             </a>
-                            <a href="{{ route('user.switch', ['role' => 'warehouse_manager', 'redirect' => 'orders']) }}" class="btn btn-outline-success btn-sm d-flex justify-content-between align-items-center py-2 px-3 border-opacity-50">
+                            <a href="{{ route('user.switch', ['role' => 'warehouse_manager', 'redirect' => 'orders']) }}" class="btn btn-outline-success btn-sm d-flex justify-content-between align-items-center py-2 px-3">
                                 <span><i class="bi bi-boxes me-2 text-success"></i>Đăng nhập nhanh với vai trò <strong>QUẢN LÝ KHO</strong></span>
                                 <span class="badge bg-success">kho</span>
                             </a>
-                            <a href="{{ route('user.switch', ['role' => 'admin', 'redirect' => 'orders']) }}" class="btn btn-outline-danger btn-sm d-flex justify-content-between align-items-center py-2 px-3 border-opacity-50">
+                            <a href="{{ route('user.switch', ['role' => 'admin', 'redirect' => 'orders']) }}" class="btn btn-outline-danger btn-sm d-flex justify-content-between align-items-center py-2 px-3">
                                 <span><i class="bi bi-shield-lock me-2 text-danger"></i>Đăng nhập nhanh với vai trò <strong>ADMIN TỔNG</strong></span>
                                 <span class="badge bg-danger">admin</span>
                             </a>
@@ -314,8 +313,8 @@
                     </div>
 
                     <div class="text-center mt-4 position-relative z-3">
-                        <span class="text-white-50 small">Chưa có tài khoản kiểm thử? </span>
-                        <a href="{{ route('register') }}" class="small fw-bold text-info text-decoration-none">
+                        <span class="text-muted small">Chưa có tài khoản kiểm thử? </span>
+                        <a href="{{ route('register') }}" class="small fw-bold text-primary text-decoration-none">
                             Đăng ký vai trò mới
                         </a>
                     </div>
@@ -326,51 +325,20 @@
 </div>
 
 <!-- ========================================================
-     CSS STYLES CHO HIỆU ỨNG ANTIGRAVITY & 3D GERMAN CAR CARD
+     CSS STYLES CHO HIỆU ỨNG 3D VÀ BỐ CỤC SANG TRỌNG
      ======================================================== -->
 <style>
-/* Nền Tối Antigravity Theme Toàn Trang */
-body.antigravity-theme {
-    background-color: #060913 !important;
-    color: #f1f5f9;
-    overflow-x: hidden;
-    position: relative;
-    min-height: 100vh;
-}
-
-/* Canvas Lưới Chấm Tròn Li Ti Nằm Phía Sau */
-.antigravity-dot-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Navbar Trong Suốt Hợp Chuẩn Antigravity */
-body.antigravity-theme .navbar-kuchen {
-    background: rgba(10, 15, 29, 0.78) !important;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
-body.antigravity-theme .navbar-brand .brand-title {
-    color: #f8fafc !important;
-}
-
 /* CSS Perspective Container */
 .tilt-perspective-container {
     perspective: 1200px;
     perspective-origin: center center;
 }
 
-/* Card 3D Siêu Xe Đức */
+/* Card 3D Siêu Xe Đức (Dark Navy Contrast Hero) */
 .car-3d-card {
-    background: radial-gradient(circle at 20% 20%, #1e293b 0%, #0f172a 65%, #050811 100%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.7), 0 0 35px rgba(56, 189, 248, 0.1);
+    background: radial-gradient(circle at 20% 20%, #1e293b 0%, #0f172a 75%, #020617 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.4), 0 0 30px rgba(37, 99, 235, 0.15);
     transform-style: preserve-3d;
     transform: rotateX(0deg) rotateY(0deg);
     position: relative;
@@ -383,21 +351,20 @@ body.antigravity-theme .navbar-brand .brand-title {
     cursor: grabbing;
 }
 
-/* Card 3D Đăng Nhập Dark Glassmorphic */
-.login-3d-dark-card {
-    background: rgba(15, 23, 42, 0.88) !important;
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.7), 0 0 30px rgba(37, 99, 235, 0.12);
+/* Card 3D Đăng Nhập Sạch Sẽ Trắng Xanh (Clean White 3D Card) */
+.login-3d-clean-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
     transform-style: preserve-3d;
     transform: rotateX(0deg) rotateY(0deg);
     position: relative;
     overflow: hidden;
     will-change: transform;
+    transition: box-shadow 0.3s ease;
 }
-.bg-dark-card {
-    background-color: #0f172a !important;
+.login-3d-clean-card:hover {
+    box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.12), 0 8px 16px -4px rgba(0, 0, 0, 0.04);
 }
 
 /* Lớp Phản Chiếu Ánh Sáng Specular Glare Theo Đầu Chuột */
@@ -447,8 +414,8 @@ body.antigravity-theme .navbar-brand .brand-title {
     filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.8));
 }
 .car-spec-pill {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(8px);
 }
 </style>
@@ -524,14 +491,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Kích hoạt 3D Tilt cho Card Xe Thể Thao Đức (±15°) và Card Đăng Nhập (±6°)
+    // Kích hoạt 3D Tilt cho Card Xe Thể Thao Đức (±15°) và Card Đăng Nhập Trắng Xanh (±6°)
     setup3DTiltCard('kuchenCarCard', 'carCardGlare', 15);
     setup3DTiltCard('kuchenLoginCard', 'loginCardGlare', 6);
 
     /* ========================================================
-       3. CLIENT-SIDE VALIDATION & NÚT ẨN/HIỆN MẬT KHẨU
+       2. CLIENT-SIDE VALIDATION & NÚT ẨN/HIỆN MẬT KHẨU
        ======================================================== */
-    // Toggle Ẩn/Hiện mật khẩu
     const toggleBtn = document.getElementById('togglePasswordBtn');
     const passwordInput = document.getElementById('password');
     const toggleIcon = document.getElementById('togglePasswordIcon');
@@ -548,7 +514,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Client-side Validation khi submit form
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
     const clientEmailErr = document.querySelector('.client-email-error');
@@ -559,7 +524,6 @@ document.addEventListener('DOMContentLoaded', function() {
             let isValid = true;
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-            // Validate Email
             if (!emailInput.value.trim() || !emailRegex.test(emailInput.value.trim())) {
                 emailInput.classList.add('is-invalid');
                 if (clientEmailErr) clientEmailErr.classList.remove('d-none');
@@ -569,7 +533,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (clientEmailErr) clientEmailErr.classList.add('d-none');
             }
 
-            // Validate Password
             if (!passwordInput.value || passwordInput.value.length < 6) {
                 passwordInput.classList.add('is-invalid');
                 if (clientPassErr) clientPassErr.classList.remove('d-none');
