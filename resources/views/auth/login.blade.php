@@ -422,8 +422,13 @@
 @endsection
 
 @section('scripts')
-<!-- GSAP CDN cho hiệu ứng 3D Physics Animation -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<!-- GSAP Engine cho 3D Tilt: Hỗ trợ chạy 100% Offline từ public/js/gsap.min.js hoặc fallback qua CDN -->
+<script src="{{ asset('js/gsap.min.js') }}"></script>
+<script>
+    if (typeof gsap === 'undefined') {
+        document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>');
+    }
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
