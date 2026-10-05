@@ -33,12 +33,12 @@ class AdjustmentService
                 throw new DomainException('Đơn hàng đang có một yêu cầu điều chỉnh đang chờ xử lý.');
             }
 
-            // 3. Sinh mã yêu cầu duy nhất (ví dụ: ADJ-000001)
-            $count = OrderAdjustment::count();
-            $code = sprintf('ADJ-%06d', $count + 1);
+            // 3. Sinh mã yêu cầu duy nhất an toàn (ví dụ: ADJ-000001)
+            $nextId = (OrderAdjustment::max('id') ?? 0) + 1;
+            $code = sprintf('ADJ-%06d', $nextId);
             while (OrderAdjustment::where('code', $code)->exists()) {
-                $count++;
-                $code = sprintf('ADJ-%06d', $count + 1);
+                $nextId++;
+                $code = sprintf('ADJ-%06d', $nextId);
             }
 
             // 4. Tạo bản ghi yêu cầu điều chỉnh Header
