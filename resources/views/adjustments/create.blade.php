@@ -6,7 +6,7 @@
 <div class="row justify-content-center">
     <div class="col-lg-10">
         <!-- Nút quay lại & Tiêu đề -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
             <div>
                 <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary btn-sm mb-2">
                     <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách đơn hàng
@@ -161,8 +161,8 @@
             </div>
 
             <!-- Nút Hành Động -->
-            <div class="d-flex justify-content-end gap-2 mb-5">
-                <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary px-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mb-5">
+                <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary px-4 text-center">
                     Hủy bỏ
                 </a>
                 <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm">

@@ -6,13 +6,13 @@
 <div class="row justify-content-center">
     <div class="col-lg-10">
         <!-- Nút quay lại & Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
             <div>
                 <a href="{{ route('adjustments.index') }}" class="btn btn-outline-secondary btn-sm mb-2">
                     <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách yêu cầu
                 </a>
-                <h4 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
-                    <span>Yêu Cầu Điều Chỉnh:</span>
+                <h4 class="fw-bold mb-0 text-dark d-flex flex-wrap align-items-center gap-2">
+                    <span>Yêu Cầu:</span>
                     <span class="text-primary">{{ $adjustment->code }}</span>
                 </h4>
             </div>
@@ -216,23 +216,23 @@
         @if($adjustment->status === 'pending')
             @can('order.adjustment.approve', $adjustment)
                 <div class="card border-0 shadow-sm bg-light mb-5">
-                    <div class="card-body d-flex justify-content-between align-items-center p-4">
+                    <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-3 p-4">
                         <div>
                             <h6 class="fw-bold mb-1 text-dark">
                                 <i class="bi bi-shield-check me-1 text-primary"></i> Xét duyệt yêu cầu
                             </h6>
                             <small class="text-muted">Xác nhận phê duyệt cập nhật số lượng hoặc từ chối yêu cầu này.</small>
                         </div>
-                        <div class="d-flex gap-2">
+                        <div class="d-flex flex-column flex-sm-row gap-2">
                             <!-- Nút Từ chối (Mở Modal) -->
-                            <button type="button" class="btn btn-outline-danger px-3 fw-medium" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                            <button type="button" class="btn btn-outline-danger px-3 fw-medium w-100 w-sm-auto" data-bs-toggle="modal" data-bs-target="#rejectModal">
                                 <i class="bi bi-x-circle me-1"></i> Từ Chối Yêu Cầu
                             </button>
 
                             <!-- Form Phê duyệt -->
                             <form method="POST" action="{{ route('adjustments.approve', $adjustment->id) }}" onsubmit="return confirm('Bạn có chắc chắn muốn PHÊ DUYỆT yêu cầu này? Số lượng trong đơn hàng sẽ được cập nhật ngay lập tức.');">
                                 @csrf
-                                <button type="submit" class="btn btn-success px-4 fw-bold shadow-sm">
+                                <button type="submit" class="btn btn-success px-4 fw-bold shadow-sm w-100">
                                     <i class="bi bi-check2-circle me-1"></i> Phê Duyệt Yêu Cầu
                                 </button>
                             </form>

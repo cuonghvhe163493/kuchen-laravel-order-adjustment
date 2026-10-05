@@ -5,14 +5,14 @@
 @section('content')
 <div class="row mb-4">
     <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
             <div>
                 <h4 class="fw-bold mb-1 text-dark">
                     <i class="bi bi-box-seam me-2 text-primary"></i>Danh sách Đơn hàng
                 </h4>
                 <p class="text-muted small mb-0">Quản lý và tra cứu đơn hàng đa kênh hệ sinh thái KÜCHEN</p>
             </div>
-            <div class="text-end">
+            <div>
                 <span class="badge bg-light text-secondary border px-3 py-2">
                     <i class="bi bi-layers me-1"></i> Tổng số: <strong>{{ $orders->total() }}</strong> đơn
                 </span>
@@ -23,7 +23,7 @@
         <div class="card mb-4 border-0 shadow-sm">
             <div class="card-body p-3">
                 <form method="GET" action="{{ route('orders.index') }}" class="row g-2 align-items-center">
-                    <div class="col-md-5">
+                    <div class="col-12 col-md-5">
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0 text-muted">
                                 <i class="bi bi-search"></i>
@@ -36,7 +36,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-12 col-sm-6 col-md-3">
                         <select name="channel" class="form-select">
                             <option value="">-- Tất cả kênh bán --</option>
                             @foreach($channels as $key => $label)
@@ -47,11 +47,11 @@
                         </select>
                     </div>
 
-                    <div class="col-md-4 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary px-3">
+                    <div class="col-12 col-sm-6 col-md-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-grow-1 flex-md-grow-0 px-3">
                             <i class="bi bi-funnel me-1"></i> Tìm kiếm
                         </button>
-                        <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary">
+                        <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary flex-grow-1 flex-md-grow-0">
                             <i class="bi bi-arrow-counterclockwise me-1"></i> Đặt lại
                         </a>
                     </div>

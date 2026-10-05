@@ -58,8 +58,8 @@
                 <span class="brand-badge">KÜCHEN</span>
                 <span>PORTAL IT</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-warning"></span>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -74,15 +74,17 @@
                         </a>
                     </li>
                 </ul>
-                <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0 pt-2 pt-lg-0 border-top border-lg-0 border-secondary-subtle">
                     @auth
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-light dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle"></i>
-                                <span>{{ auth()->user()->name }}</span>
-                                <span class="badge bg-warning text-dark text-uppercase">{{ auth()->user()->role }}</span>
+                        <div class="dropdown w-100 w-lg-auto">
+                            <button class="btn btn-sm btn-outline-light dropdown-toggle d-flex align-items-center justify-content-between gap-2 w-100 w-lg-auto" type="button" data-bs-toggle="dropdown">
+                                <span class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-person-circle"></i>
+                                    <span>{{ auth()->user()->name }}</span>
+                                </span>
+                                <span class="badge bg-warning text-dark text-uppercase ms-auto">{{ auth()->user()->role }}</span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <ul class="dropdown-menu dropdown-menu-end shadow w-100 w-lg-auto">
                                 <li><h6 class="dropdown-header">Chuyển vai trò người dùng</h6></li>
                                 <li>
                                     <a class="dropdown-item d-flex justify-content-between align-items-center {{ auth()->user()->role === 'sale' ? 'active' : '' }}" href="{{ route('user.switch', 'sale') }}">
@@ -110,7 +112,7 @@
         </div>
     </nav>
 
-    <main class="container-fluid px-4 pb-5">
+    <main class="container-fluid px-3 px-md-4 pb-5">
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
                 <i class="bi bi-check-circle-fill fs-5"></i>

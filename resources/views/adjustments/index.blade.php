@@ -5,7 +5,7 @@
 @section('content')
 <div class="row mb-4">
     <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
             <div>
                 <h4 class="fw-bold mb-1 text-dark">
                     <i class="bi bi-card-checklist me-2 text-primary"></i>Danh Sách Yêu Cầu Điều Chỉnh
@@ -21,9 +21,9 @@
 
         <!-- Bộ lọc trạng thái & đơn hàng -->
         <div class="card mb-4 border-0 shadow-sm">
-            <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="btn-group" role="group">
+            <div class="card-body p-3 d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-3">
+                <div class="d-flex align-items-center">
+                    <div class="btn-group w-100 flex-wrap" role="group">
                         <a href="{{ route('adjustments.index', array_filter(['order_id' => $orderId])) }}" 
                            class="btn btn-sm {{ $status === '' ? 'btn-primary' : 'btn-outline-secondary' }}">
                             Tất cả
@@ -44,9 +44,9 @@
                 </div>
 
                 @if($orderId)
-                    <div class="d-flex align-items-center gap-2">
+                    <div class="d-flex align-items-center justify-content-between justify-content-md-end gap-2 flex-wrap">
                         <span class="badge bg-info-subtle text-info border border-info px-3 py-2">
-                            <i class="bi bi-funnel-fill me-1"></i> Đang lọc theo đơn hàng ID: #<strong>{{ $orderId }}</strong>
+                            <i class="bi bi-funnel-fill me-1"></i> Đang lọc đơn #<strong>{{ $orderId }}</strong>
                         </span>
                         <a href="{{ route('adjustments.index') }}" class="btn btn-sm btn-outline-secondary">
                             <i class="bi bi-x-circle me-1"></i> Xem tất cả đơn
