@@ -64,8 +64,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active fw-medium" href="{{ route('orders.index') }}">
+                        <a class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }} fw-medium" href="{{ route('orders.index') }}">
                             <i class="bi bi-receipt me-1"></i> Đơn hàng
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('adjustments.*') ? 'active' : '' }} fw-medium" href="{{ route('adjustments.index') }}">
+                            <i class="bi bi-card-checklist me-1"></i> Yêu cầu điều chỉnh
                         </a>
                     </li>
                 </ul>
