@@ -4,13 +4,12 @@
 
 @section('content')
 <div class="container py-3 py-lg-4 position-relative z-2">
-    <!-- Header Thương Hiệu KÜCHEN Tối Giản & Đẳng Cấp -->
+    <!-- Header Thương Hiệu KÜCHEN Chữ Thuần Túy -->
     <div class="text-center mb-4">
-        <div class="d-inline-flex align-items-center gap-2 mb-2">
-            <span class="brand-badge fs-6 px-3 py-1 shadow-sm">KÜCHEN</span>
-            <span class="fw-bold fs-4 text-dark font-monospace tracking-wide">ENTERPRISE PORTAL</span>
-        </div>
-        <p class="text-muted small mb-0">Hệ sinh thái điều phối đơn hàng & kho vận tiêu chuẩn công nghệ Đức</p>
+        <h3 class="fw-bold text-dark font-monospace mb-1 tracking-wide">
+            <span class="text-primary fw-bolder">KÜCHEN</span> PORTAL
+        </h3>
+        <p class="text-muted small mb-0">Hệ sinh thái điều phối đơn hàng & kiểm soát kho vận</p>
     </div>
 
     <div class="row g-4 align-items-stretch justify-content-center">

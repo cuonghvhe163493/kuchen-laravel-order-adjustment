@@ -40,16 +40,6 @@
             border-bottom: 1px solid #e2e8f0 !important;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 4px 12px rgba(0, 0, 0, 0.03);
         }
-        .brand-badge {
-            background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
-            color: white;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.82rem;
-            letter-spacing: 1.5px;
-            box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
-        }
         .navbar-brand .brand-title {
             color: #0f172a !important;
             font-weight: 800;
@@ -237,9 +227,8 @@
     <canvas id="globalAntigravityCanvas" class="antigravity-dot-canvas"></canvas>
     <nav class="navbar navbar-expand-lg navbar-kuchen sticky-top mb-4">
         <div class="container-fluid px-3 px-md-4">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('orders.index') }}">
-                <span class="brand-badge">KÜCHEN</span>
-                <span class="brand-title">PORTAL IT</span>
+            <a class="navbar-brand fw-bold fs-5 text-dark font-monospace text-decoration-none" href="{{ route('orders.index') }}">
+                <span class="text-primary fw-bolder">KÜCHEN</span> PORTAL
             </a>
             <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>

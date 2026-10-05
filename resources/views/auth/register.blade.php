@@ -6,10 +6,9 @@
 <div class="row justify-content-center align-items-center py-4">
     <div class="col-12 col-md-8 col-lg-5">
         <div class="text-center mb-4">
-            <div class="d-inline-flex align-items-center gap-2 mb-2">
-                <span class="brand-badge fs-6 px-3 py-1">KÜCHEN</span>
-                <span class="fw-bold fs-4 text-dark font-monospace">PORTAL</span>
-            </div>
+            <h3 class="fw-bold text-dark font-monospace mb-1 tracking-wide">
+                <span class="text-primary fw-bolder">KÜCHEN</span> PORTAL
+            </h3>
             <p class="text-muted small mb-0">Tạo tài khoản mới để trải nghiệm phân quyền 3 vai trò</p>
         </div>
 
