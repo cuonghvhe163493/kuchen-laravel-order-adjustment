@@ -18,26 +18,27 @@
             --color-primary-hover: #1d4ed8;
             --color-secondary: #0f172a;
             --color-accent: #ea580c;
-            --color-background: #f8fafc;
-            --color-foreground: #0f172a;
-            --color-card: #ffffff;
-            --color-border: #e2e8f0;
-            --color-muted: #64748b;
+            --color-background: #060913;
+            --color-foreground: #f8fafc;
+            --color-card: rgba(15, 23, 42, 0.82);
+            --color-border: rgba(255, 255, 255, 0.1);
+            --color-muted: #94a3b8;
         }
-        body {
-            background-color: var(--color-background);
+        body, body.antigravity-theme {
+            background-color: #060913 !important;
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: var(--color-foreground);
+            color: #f8fafc;
             letter-spacing: -0.01em;
             -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
         }
-        /* Modern Glassmorphic Navbar */
+        /* Modern Glassmorphic Dark Navbar */
         .navbar-kuchen {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 4px 12px rgba(0, 0, 0, 0.03);
+            background: rgba(10, 15, 29, 0.85) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
         .brand-badge {
             background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
@@ -47,16 +48,16 @@
             border-radius: 6px;
             font-size: 0.82rem;
             letter-spacing: 1.5px;
-            box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
+            box-shadow: 0 2px 8px rgba(234, 88, 12, 0.35);
         }
         .navbar-brand .brand-title {
-            color: #0f172a;
+            color: #f8fafc !important;
             font-weight: 800;
             font-size: 1.15rem;
             letter-spacing: -0.02em;
         }
         .navbar-kuchen .nav-link {
-            color: #475569;
+            color: #94a3b8;
             font-weight: 500;
             font-size: 0.92rem;
             padding: 0.5rem 0.85rem;
@@ -64,24 +65,38 @@
             transition: all 0.2s ease;
         }
         .navbar-kuchen .nav-link:hover {
-            color: var(--color-primary);
-            background-color: #f1f5f9;
+            color: #38bdf8;
+            background-color: rgba(255, 255, 255, 0.06);
         }
         .navbar-kuchen .nav-link.active {
-            color: var(--color-primary);
+            color: #ffffff;
             font-weight: 700;
-            background-color: #eff6ff;
+            background-color: rgba(37, 99, 235, 0.25);
+            border: 1px solid rgba(37, 99, 235, 0.4);
         }
-        /* Elevation & Cards */
+        /* Elevation & Dark Cards */
         .card {
-            border: 1px solid var(--color-border);
-            border-radius: 12px;
-            background: #ffffff;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 6px 16px -2px rgba(0, 0, 0, 0.04);
-            transition: box-shadow 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 14px;
+            background: rgba(15, 23, 42, 0.82) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: #f8fafc !important;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
         }
         .card:hover {
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.02), 0 10px 24px -4px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.7), 0 0 25px rgba(56, 189, 248, 0.08);
+            border-color: rgba(255, 255, 255, 0.18) !important;
+        }
+        .card-header {
+            background-color: rgba(255, 255, 255, 0.03) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            color: #f8fafc !important;
+        }
+        .card-footer {
+            background-color: rgba(255, 255, 255, 0.02) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
         }
         /* Modern Buttons */
         .btn {
@@ -94,15 +109,25 @@
         .btn-primary {
             background-color: var(--color-primary);
             border-color: var(--color-primary);
-            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
         }
         .btn-primary:hover {
             background-color: var(--color-primary-hover);
             border-color: var(--color-primary-hover);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
         }
-        /* Modern Soft Badges */
+        .btn-white, .btn-outline-secondary {
+            background-color: rgba(15, 23, 42, 0.8) !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
+            color: #f1f5f9 !important;
+        }
+        .btn-white:hover, .btn-outline-secondary:hover {
+            background-color: rgba(30, 41, 59, 0.9) !important;
+            border-color: rgba(255, 255, 255, 0.25) !important;
+            color: #ffffff !important;
+        }
+        /* Modern Soft Badges in Dark Theme */
         .badge {
             font-weight: 600;
             padding: 0.4em 0.75em;
@@ -110,21 +135,120 @@
             font-size: 0.78rem;
             letter-spacing: 0.01em;
         }
-        .badge-channel-sale { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #dbeafe; }
-        .badge-channel-shopee { background-color: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
-        .badge-channel-tiktok { background-color: #f1f5f9; color: #0f172a; border: 1px solid #e2e8f0; }
-        .badge-channel-lazada { background-color: #f0f9ff; color: #0369a1; border: 1px solid #e0f2fe; }
-        .badge-channel-retail { background-color: #f8fafc; color: #475569; border: 1px solid #cbd5e1; }
+        .badge-channel-sale { background-color: rgba(37, 99, 235, 0.2); color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.3); }
+        .badge-channel-shopee { background-color: rgba(234, 88, 12, 0.2); color: #fdba74; border: 1px solid rgba(253, 186, 116, 0.3); }
+        .badge-channel-tiktok { background-color: rgba(255, 255, 255, 0.1); color: #f1f5f9; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .badge-channel-lazada { background-color: rgba(2, 132, 199, 0.2); color: #7dd3fc; border: 1px solid rgba(125, 211, 252, 0.3); }
+        .badge-channel-retail { background-color: rgba(100, 116, 139, 0.2); color: #cbd5e1; border: 1px solid rgba(203, 213, 225, 0.3); }
         
-        .badge-status-pending { background-color: #fefce8; color: #a16207; border: 1px solid #fef08a; }
-        .badge-status-confirmed { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-        .badge-status-exported { background-color: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
-        .badge-status-cancelled { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+        .badge-status-pending { background-color: rgba(202, 138, 4, 0.2); color: #fef08a; border: 1px solid rgba(254, 240, 138, 0.3); }
+        .badge-status-confirmed { background-color: rgba(37, 99, 235, 0.2); color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.3); }
+        .badge-status-exported { background-color: rgba(22, 163, 74, 0.2); color: #86efac; border: 1px solid rgba(134, 239, 172, 0.3); }
+        .badge-status-cancelled { background-color: rgba(220, 38, 38, 0.2); color: #fca5a5; border: 1px solid rgba(252, 165, 165, 0.3); }
 
+        /* Dark Table */
+        .table {
+            --bs-table-bg: transparent;
+            --bs-table-color: #e2e8f0;
+            --bs-table-border-color: rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
+        }
         .table > :not(caption) > * > * {
             padding: 0.9rem 0.85rem;
-            border-bottom-color: #f1f5f9;
+            background-color: transparent !important;
+            color: #e2e8f0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
         }
+        .table-hover tbody tr:hover > * {
+            background-color: rgba(255, 255, 255, 0.04) !important;
+            color: #ffffff;
+        }
+        th {
+            color: #94a3b8 !important;
+            font-weight: 600;
+        }
+
+        /* Form Controls & Inputs */
+        .form-control, .form-select {
+            background-color: rgba(15, 23, 42, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            color: #f8fafc !important;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(15, 23, 42, 0.95) !important;
+            border-color: #38bdf8 !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.25);
+        }
+        .form-control::placeholder {
+            color: #64748b !important;
+        }
+        .input-group-text {
+            background-color: rgba(30, 41, 59, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            color: #94a3b8 !important;
+        }
+
+        /* Dropdowns & Modals */
+        .dropdown-menu {
+            background-color: #0f172a !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            color: #f8fafc;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+        .dropdown-item {
+            color: #cbd5e1;
+        }
+        .dropdown-item:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+        .dropdown-divider {
+            border-top-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* Text Overrides */
+        .text-dark {
+            color: #f8fafc !important;
+        }
+        .text-muted {
+            color: #94a3b8 !important;
+        }
+        .text-secondary {
+            color: #cbd5e1 !important;
+        }
+        .bg-light {
+            background-color: rgba(255, 255, 255, 0.04) !important;
+        }
+        .bg-white {
+            background-color: rgba(15, 23, 42, 0.82) !important;
+        }
+        .border-light {
+            border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        /* Pagination in Dark */
+        .pagination .page-link {
+            background-color: rgba(15, 23, 42, 0.8);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+        }
+        .pagination .page-link:hover {
+            background-color: rgba(30, 41, 59, 0.9);
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+        .pagination .page-item.active .page-link {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+            color: #ffffff;
+        }
+        .pagination .page-item.disabled .page-link {
+            background-color: rgba(15, 23, 42, 0.4);
+            border-color: rgba(255, 255, 255, 0.05);
+            color: #475569;
+        }
+
         /* Canvas Nền Chấm Tròn Li Ti Tương Tác Antigravity Toàn Bộ Màn Hình */
         .antigravity-dot-canvas {
             position: fixed;
@@ -141,7 +265,7 @@
         }
     </style>
 </head>
-<body class="@yield('body-class')">
+<body class="@yield('body-class', 'antigravity-theme')">
     <!-- Canvas Chấm Tròn Tương Tác 3D & Làn Sóng Nước Khi Click (Antigravity Global Canvas) -->
     <canvas id="globalAntigravityCanvas" class="antigravity-dot-canvas"></canvas>
     <nav class="navbar navbar-expand-lg navbar-kuchen sticky-top mb-4">

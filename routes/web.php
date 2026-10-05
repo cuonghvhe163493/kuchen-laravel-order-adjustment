@@ -34,10 +34,15 @@ Route::post('/adjustments/{id}/reject', [AdjustmentController::class, 'reject'])
     ->name('adjustments.reject');
 
 // Chuyển đổi vai trò kiểm thử nhanh trên giao diện (Bài 5)
-Route::get('/switch-user/{role}', function (string $role) {
+Route::get('/switch-user/{role}', function (\Illuminate\Http\Request $request, string $role) {
     $user = User::where('role', $role)->first();
     if ($user) {
         Auth::login($user);
+        $request->session()->regenerate();
+        $prev = url()->previous();
+        if ($request->has('redirect') || str_contains($prev, '/login') || str_contains($prev, '/register')) {
+            return redirect()->route('orders.index')->with('success', "Đăng nhập nhanh thành công! Chào mừng: {$user->name} (" . strtoupper($user->role) . ")");
+        }
         return back()->with('success', "Đã chuyển sang tài khoản: {$user->name} (" . strtoupper($user->role) . ")");
     }
     return back()->with('error', "Không tìm thấy người dùng vai trò: {$role}");

@@ -298,15 +298,15 @@
 
                         <!-- Cụm Kiểm Thử Nhanh 1-Click Độc Lập Cho Người Chấm/Test -->
                         <div class="d-grid gap-2">
-                            <a href="{{ route('user.switch', 'sale') }}" class="btn btn-outline-primary btn-sm d-flex justify-content-between align-items-center py-2 px-3 border-opacity-50">
+                            <a href="{{ route('user.switch', ['role' => 'sale', 'redirect' => 'orders']) }}" class="btn btn-outline-primary btn-sm d-flex justify-content-between align-items-center py-2 px-3 border-opacity-50">
                                 <span><i class="bi bi-person-workspace me-2 text-primary"></i>Đăng nhập nhanh với vai trò <strong>SALE</strong></span>
                                 <span class="badge bg-primary">sale</span>
                             </a>
-                            <a href="{{ route('user.switch', 'warehouse_manager') }}" class="btn btn-outline-success btn-sm d-flex justify-content-between align-items-center py-2 px-3 border-opacity-50">
+                            <a href="{{ route('user.switch', ['role' => 'warehouse_manager', 'redirect' => 'orders']) }}" class="btn btn-outline-success btn-sm d-flex justify-content-between align-items-center py-2 px-3 border-opacity-50">
                                 <span><i class="bi bi-boxes me-2 text-success"></i>Đăng nhập nhanh với vai trò <strong>QUẢN LÝ KHO</strong></span>
                                 <span class="badge bg-success">kho</span>
                             </a>
-                            <a href="{{ route('user.switch', 'admin') }}" class="btn btn-outline-danger btn-sm d-flex justify-content-between align-items-center py-2 px-3 border-opacity-50">
+                            <a href="{{ route('user.switch', ['role' => 'admin', 'redirect' => 'orders']) }}" class="btn btn-outline-danger btn-sm d-flex justify-content-between align-items-center py-2 px-3 border-opacity-50">
                                 <span><i class="bi bi-shield-lock me-2 text-danger"></i>Đăng nhập nhanh với vai trò <strong>ADMIN TỔNG</strong></span>
                                 <span class="badge bg-danger">admin</span>
                             </a>

@@ -86,4 +86,19 @@ class AuthenticationFeatureTest extends TestCase
         $response->assertRedirect('/login');
         $this->assertGuest();
     }
+
+    public function test_quick_login_switch_user_redirects_to_orders_from_login_page(): void
+    {
+        $saleUser = User::create([
+            'name' => 'Nguyễn Văn A',
+            'email' => 'sale_quick@kuchen.vn',
+            'password' => bcrypt('password123'),
+            'role' => 'sale',
+        ]);
+
+        $response = $this->from('/login')->get('/switch-user/sale?redirect=orders');
+
+        $response->assertRedirect('/orders');
+        $this->assertAuthenticatedAs($saleUser);
+    }
 }
