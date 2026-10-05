@@ -19,29 +19,40 @@
             </div>
         </div>
 
-        <!-- Bộ lọc trạng thái -->
+        <!-- Bộ lọc trạng thái & đơn hàng -->
         <div class="card mb-4 border-0 shadow-sm">
-            <div class="card-body p-3">
-                <form method="GET" action="{{ route('adjustments.index') }}" class="d-flex align-items-center gap-3">
+            <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-3">
                     <div class="btn-group" role="group">
-                        <a href="{{ route('adjustments.index') }}" 
+                        <a href="{{ route('adjustments.index', array_filter(['order_id' => $orderId])) }}" 
                            class="btn btn-sm {{ $status === '' ? 'btn-primary' : 'btn-outline-secondary' }}">
                             Tất cả
                         </a>
-                        <a href="{{ route('adjustments.index', ['status' => 'pending']) }}" 
+                        <a href="{{ route('adjustments.index', array_filter(['order_id' => $orderId, 'status' => 'pending'])) }}" 
                            class="btn btn-sm {{ $status === 'pending' ? 'btn-warning text-dark' : 'btn-outline-secondary' }}">
                             Chờ duyệt
                         </a>
-                        <a href="{{ route('adjustments.index', ['status' => 'approved']) }}" 
+                        <a href="{{ route('adjustments.index', array_filter(['order_id' => $orderId, 'status' => 'approved'])) }}" 
                            class="btn btn-sm {{ $status === 'approved' ? 'btn-success' : 'btn-outline-secondary' }}">
                             Đã duyệt
                         </a>
-                        <a href="{{ route('adjustments.index', ['status' => 'rejected']) }}" 
+                        <a href="{{ route('adjustments.index', array_filter(['order_id' => $orderId, 'status' => 'rejected'])) }}" 
                            class="btn btn-sm {{ $status === 'rejected' ? 'btn-danger' : 'btn-outline-secondary' }}">
                             Đã từ chối
                         </a>
                     </div>
-                </form>
+                </div>
+
+                @if($orderId)
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-info-subtle text-info border border-info px-3 py-2">
+                            <i class="bi bi-funnel-fill me-1"></i> Đang lọc theo đơn hàng ID: #<strong>{{ $orderId }}</strong>
+                        </span>
+                        <a href="{{ route('adjustments.index') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i> Xem tất cả đơn
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
 
