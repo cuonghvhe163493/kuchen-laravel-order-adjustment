@@ -29,8 +29,13 @@ Theo yêu cầu bắt buộc: Phải dùng Policy, Gate hoặc Middleware để 
 Chứa các phương thức kiểm tra vai trò:
 - `view(User $user, ?OrderAdjustment $adj)`: kiểm tra role in `['sale', 'warehouse_manager', 'admin']`.
 - `create(User $user)`: kiểm tra role in `['sale', 'admin']`.
-- `approve(User $user, ?OrderAdjustment $adj)`: kiểm tra role in `['warehouse_manager', 'admin']` (SALE trả về `false`).
-- `reject(User $user, ?OrderAdjustment $adj)`: kiểm tra role in `['warehouse_manager', 'admin']` (SALE trả về `false`).
+- `approve(User $user, ?OrderAdjustment $adj)`:
+  * SALE: trả về `false` 100%.
+  * Vai trò hợp lệ: `warehouse_manager` hoặc `admin`.
+  * **Nguyên tắc Segregation of Duties (SoD / Four-Eyes Principle):** Người tạo yêu cầu KHÔNG ĐƯỢC tự mình phê duyệt (`$adjustment->created_by === $user->id` $\rightarrow$ cấm, kể cả Admin).
+- `reject(User $user, ?OrderAdjustment $adj)`:
+  * SALE: trả về `false` 100%.
+  * Người tạo không tự từ chối yêu cầu của mình.
 
 ### 3.2. Đăng ký Gates: `app/Providers/AppServiceProvider.php`
 Khai báo đầy đủ 4 Gates với đúng chuỗi định danh yêu cầu trong đề bài:
@@ -43,15 +48,15 @@ Gate::define('order.adjustment.approve', [OrderAdjustmentPolicy::class, 'approve
 Gate::define('order.adjustment.reject', [OrderAdjustmentPolicy::class, 'reject']);
 ```
 
-### 3.3. Kiểm soát cứng tại Backend (`AdjustmentController.php`)
-Tất cả các hành động đều được bọc bởi `Gate::authorize(...)`:
-- `create()` & `store()`: `Gate::authorize('order.adjustment.create');`
-- `approve()`: `Gate::authorize('order.adjustment.approve', $adjustment);`
-- `reject()`: `Gate::authorize('order.adjustment.reject', $adjustment);`
-*Kết quả:* Khi vai trò không được phép gọi trực tiếp qua URL hoặc API, server sẽ trả về lỗi **`403 Forbidden`**.
+### 3.3. Bảo vệ đa tầng (Defense-in-Depth): Middleware + Controller Gate
+- **Tầng Route Middleware:** Khai báo `can:order.adjustment.create`, `can:order.adjustment.view` trực tiếp trên các Route trong `routes/web.php` để chặn đứng truy cập trái phép ngay tại HTTP pipeline trước khi tới Controller.
+- **Tầng Controller Backend (`AdjustmentController.php`):** Tất cả các hành động đều được kiểm thực chặt chẽ qua `Gate::authorize(...)`.
+- **Loại bỏ triệt để Hardcoded Fallback:** Chỉ sử dụng `Auth::id()` thực tế, loại bỏ việc fallback gán bừa user làm sai lệch Audit Trail.
+- **Middleware Quản lý phiên Demo (`EnsureDemoUserAuthenticated`):** Tự động duy trì phiên làm việc cho môi trường demo trên toàn bộ `web` pipeline, đảm bảo không có lỗ hổng "khách vô danh" gây lỗi 500/session drop.
 
 ### 3.4. Giao diện & Tiện ích chuyển đổi vai trò (Role Switcher)
-- Trong Blade: Dùng `@can('order.adjustment.create')` và `@can('order.adjustment.approve')`.
+- Trong Blade: Dùng `@can('order.adjustment.create')` và `@can('order.adjustment.approve', $adjustment)`.
+- Khi người xem là người tạo đơn: Hiển thị thông báo giải thích rõ nguyên tắc tách biệt nhiệm vụ không được tự duyệt.
 - Trên Navbar [app.blade.php](resources/views/layouts/app.blade.php): Tích hợp dropdown chuyển đổi nhanh giữa:
   * `SALE (sale@kuchen.vn)`
   * `QUẢN LÝ KHO (kho@kuchen.vn)`
@@ -68,9 +73,12 @@ Tất cả các hành động đều được bọc bởi `Gate::authorize(...)`
 4. Test SALE cố tình gửi POST duyệt bị chặn **403 Forbidden** (Tiêu chí 3 của đề bài).
 5. Test SALE cố tình gửi POST từ chối bị chặn **403 Forbidden**.
 6. Test Quản lý kho và Admin duyệt thành công (HTTP 302).
+7. Test người tạo (kể cả Admin) không được tự phê duyệt đơn của mình (Four-Eyes Principle).
+8. Test chặn thao túng truyền dòng sản phẩm của đơn hàng khác (Cross-Order Injection).
+9. Test chặn gửi trùng lặp dòng sản phẩm trong cùng một yêu cầu.
 
 ---
 
 ## 📌 LƯU Ý CHO CÁC AGENT TIẾP THEO
-- Mặc định khi khách truy cập chưa đăng nhập, `OrderController` sẽ tự động đăng nhập tài khoản SALE mẫu để tránh lỗi Null User khi demo.
-- Dùng thanh chuyển đổi vai trò ở góc phải Navbar để test quyền ngay trên trình duyệt.
+- Hệ thống áp dụng kiểm soát quyền 3 lớp: Route Middleware $\rightarrow$ Controller Gate $\rightarrow$ Policy Model.
+- Phiên làm việc được quản lý tự động bởi `EnsureDemoUserAuthenticated`. Dùng thanh chuyển đổi vai trò ở góc phải Navbar để test các góc nhìn người dùng khác nhau.

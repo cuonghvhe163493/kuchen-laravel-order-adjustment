@@ -115,6 +115,9 @@ php artisan test
    - SALE không thể từ chối (bị chặn 403 Forbidden).
    - Quản lý kho không thể tạo yêu cầu (bị chặn 403 Forbidden).
    - Quản lý kho và Admin duyệt/từ chối thành công.
+   - Nguyên tắc Four-Eyes / SoD: Người tạo (kể cả Admin) không được tự phê duyệt đơn của mình (bị chặn 403).
+   - Chặn thao túng chéo dòng mặt hàng của đơn hàng khác (Cross-Order Item Injection).
+   - Chặn gửi trùng lặp cùng một dòng sản phẩm nhiều lần trong 1 yêu cầu (Distinct Validation).
 6. `AdjustmentHistoryTest`:
    - Trang chi tiết hiển thị đầy đủ thông tin kiểm toán (Người tạo, đơn liên quan, SKU và số lượng trước - sau, lý do).
    - Hiển thị người duyệt, thời gian duyệt, lý do từ chối lấy từ database.

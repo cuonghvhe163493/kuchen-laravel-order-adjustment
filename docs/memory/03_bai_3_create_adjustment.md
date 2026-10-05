@@ -57,9 +57,11 @@ public function createAdjustment(int $orderId, array $data, int $creatorId): Ord
 *File:* `app/Http/Requests/StoreAdjustmentRequest.php`
 - `order_id`: `required|integer|exists:orders,id`
 - `reason`: `required|string|min:5|max:1000`
-- `items.*.order_item_id`: `required|exists:order_items,id`
-- `items.*.new_sku`: `required|exists:product_variants,sku` (đảm bảo SKU tồn tại)
+- `items.*.order_item_id`: `required|integer|distinct|exists:order_items,id` (chống gửi trùng lặp cùng 1 dòng mặt hàng)
+- `items.*.new_sku`: `required|exists:product_variants,sku` (đảm bảo SKU tồn tại trong danh mục)
 - `items.*.new_quantity`: `required|integer|min:1` (số nguyên dương)
+- **Kiểm tra chéo (Cross-Order Item Check):** Khối `withValidator` thẩm định tất cả `order_item_id` gửi lên phải thực sự thuộc về đơn hàng `order_id`, chống hành vi cố tình inject dòng hàng của đơn khác.
+- **Sinh mã duy nhất an toàn:** Dựa trên `max('id') + 1` và vòng lặp retry trong transaction chống Race Condition.
 
 ---
 
