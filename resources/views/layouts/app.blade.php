@@ -125,12 +125,25 @@
             padding: 0.9rem 0.85rem;
             border-bottom-color: #f1f5f9;
         }
-        .table-hover tbody tr:hover {
-            background-color: #f8fafc;
+        /* Canvas Nền Chấm Tròn Li Ti Tương Tác Antigravity Toàn Bộ Màn Hình */
+        .antigravity-dot-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+        nav, main {
+            position: relative;
+            z-index: 1;
         }
     </style>
 </head>
 <body class="@yield('body-class')">
+    <!-- Canvas Chấm Tròn Tương Tác 3D & Làn Sóng Nước Khi Click (Antigravity Global Canvas) -->
+    <canvas id="globalAntigravityCanvas" class="antigravity-dot-canvas"></canvas>
     <nav class="navbar navbar-expand-lg navbar-kuchen sticky-top mb-4">
         <div class="container-fluid px-3 px-md-4">
             <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('orders.index') }}">
@@ -245,6 +258,183 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Global Antigravity Interactive Dot Grid & Click Wave Shockwave Engine -->
+    <script>
+    (function initGlobalAntigravity() {
+        const canvas = document.getElementById('globalAntigravityCanvas');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        const spacing = 32;
+        const dots = [];
+        const ripples = [];
+
+        const mouse = {
+            x: -9999,
+            y: -9999,
+            radius: 145 // Bán kính từ trường chuột
+        };
+
+        const isDarkTheme = () => document.body.classList.contains('antigravity-theme');
+
+        function createGrid() {
+            dots.length = 0;
+            const cols = Math.ceil(width / spacing) + 1;
+            const rows = Math.ceil(height / spacing) + 1;
+
+            for (let c = 0; c < cols; c++) {
+                for (let r = 0; r < rows; r++) {
+                    const baseX = c * spacing;
+                    const baseY = r * spacing;
+                    dots.push({
+                        baseX, baseY,
+                        x: baseX, y: baseY,
+                        baseRadius: 1.4,
+                        radius: 1.4,
+                        targetRadius: 1.4,
+                        alpha: 0.18,
+                        targetAlpha: 0.18,
+                        targetColor: isDarkTheme() ? '148, 163, 184' : '100, 116, 139',
+                        color: isDarkTheme() ? '148, 163, 184' : '100, 116, 139'
+                    });
+                }
+            }
+        }
+
+        createGrid();
+
+        window.addEventListener('resize', function() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            createGrid();
+        });
+
+        // Theo dõi tọa độ chuột toàn màn hình
+        window.addEventListener('mousemove', function(e) {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        document.addEventListener('mouseleave', function() {
+            mouse.x = -9999;
+            mouse.y = -9999;
+        });
+
+        // Hiệu ứng làn sóng lan tỏa khi CLICK (Water Ripple Shockwave)
+        window.addEventListener('pointerdown', function(e) {
+            ripples.push({
+                x: e.clientX,
+                y: e.clientY,
+                radius: 0,
+                maxRadius: Math.max(width, height) * 0.75,
+                speed: 14,
+                width: 70,
+                intensity: 1.0
+            });
+        });
+
+        function render() {
+            ctx.clearRect(0, 0, width, height);
+            const dark = isDarkTheme();
+
+            // Cập nhật và vẽ các vòng sóng nước lan tỏa (Ripples)
+            for (let rIdx = ripples.length - 1; rIdx >= 0; rIdx--) {
+                const rp = ripples[rIdx];
+                rp.radius += rp.speed;
+                rp.intensity = Math.max(0, 1 - (rp.radius / rp.maxRadius));
+
+                if (rp.radius > 5) {
+                    ctx.beginPath();
+                    ctx.arc(rp.x, rp.y, rp.radius, 0, Math.PI * 2);
+                    ctx.lineWidth = 2.4;
+                    ctx.strokeStyle = dark
+                        ? `rgba(56, 189, 248, ${rp.intensity * 0.45})`
+                        : `rgba(37, 99, 235, ${rp.intensity * 0.35})`;
+                    ctx.stroke();
+                }
+
+                if (rp.intensity <= 0.01 || rp.radius >= rp.maxRadius) {
+                    ripples.splice(rIdx, 1);
+                }
+            }
+
+            // Cập nhật và render từng chấm tròn li ti
+            for (let i = 0; i < dots.length; i++) {
+                const dot = dots[i];
+
+                let targetX = dot.baseX;
+                let targetY = dot.baseY;
+                let targetRadius = dot.baseRadius;
+                let targetAlpha = dark ? 0.18 : 0.22;
+                let targetColor = dark ? '148, 163, 184' : '100, 116, 139';
+
+                // 1. Phản ứng với chuột (Hover): Nở to thêm rõ rệt và đẩy nhẹ
+                const dxMouse = mouse.x - dot.x;
+                const dyMouse = mouse.y - dot.y;
+                const distMouse = Math.hypot(dxMouse, dyMouse);
+
+                if (distMouse < mouse.radius) {
+                    const factor = 1 - (distMouse / mouse.radius);
+                    targetX = dot.baseX - (dxMouse / (distMouse || 1)) * factor * 16;
+                    targetY = dot.baseY - (dyMouse / (distMouse || 1)) * factor * 16;
+                    // Nở to rõ rệt (từ 1.4px lên tới ~5.6px)
+                    targetRadius = dot.baseRadius + factor * 4.2;
+                    targetAlpha = 0.25 + factor * 0.75;
+                    targetColor = dark ? '56, 189, 248' : '37, 99, 235';
+                }
+
+                // 2. Phản ứng với làn sóng khi CLICK (Water Ripple Shockwave)
+                for (let rIdx = 0; rIdx < ripples.length; rIdx++) {
+                    const rp = ripples[rIdx];
+                    const dxWave = dot.x - rp.x;
+                    const dyWave = dot.y - rp.y;
+                    const distWave = Math.hypot(dxWave, dyWave);
+                    const diff = Math.abs(distWave - rp.radius);
+
+                    if (diff < rp.width) {
+                        const waveFactor = (1 - diff / rp.width) * rp.intensity;
+                        // Sóng đẩy chấm tròn văng ra ngoài theo hướng lan tỏa
+                        targetX += (dxWave / (distWave || 1)) * waveFactor * 24;
+                        targetY += (dyWave / (distWave || 1)) * waveFactor * 24;
+                        // Chấm phồng to lên như chạm vào làn sóng
+                        targetRadius = Math.max(targetRadius, dot.baseRadius + waveFactor * 5.2);
+                        targetAlpha = Math.max(targetAlpha, 0.35 + waveFactor * 0.65);
+                        targetColor = dark ? '56, 189, 248' : '37, 99, 235';
+                    }
+                }
+
+                // Hồi vị mượt mà (Smooth Damping Interpolation)
+                dot.x += (targetX - dot.x) * 0.16;
+                dot.y += (targetY - dot.y) * 0.16;
+                dot.radius += (targetRadius - dot.radius) * 0.18;
+                dot.alpha += (targetAlpha - dot.alpha) * 0.18;
+                dot.color = targetColor;
+
+                // Vẽ chấm tròn chính
+                ctx.beginPath();
+                ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${dot.color}, ${dot.alpha})`;
+                ctx.fill();
+
+                // Nếu chấm nở to (trên 3.2px), vẽ thêm quầng hào quang mềm (Glowing Ring)
+                if (dot.radius > 3.2) {
+                    ctx.beginPath();
+                    ctx.arc(dot.x, dot.y, dot.radius + 2, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${dot.color}, ${dot.alpha * 0.28})`;
+                    ctx.fill();
+                }
+            }
+
+            requestAnimationFrame(render);
+        }
+
+        render();
+    })();
+    </script>
     @yield('scripts')
     @stack('scripts')
 </body>

@@ -4,9 +4,6 @@
 @section('body-class', 'antigravity-theme')
 
 @section('content')
-<!-- Canvas Nền Chấm Tròn Li Ti Tương Tác Theo Đầu Chuột (Antigravity Interactive Dot Grid) -->
-<canvas id="antigravityDotCanvas" class="antigravity-dot-canvas"></canvas>
-
 <div class="container py-3 py-lg-4 position-relative z-2">
     <!-- Header Thương Hiệu KÜCHEN Tối Giản & Đẳng Cấp -->
     <div class="text-center mb-4">
@@ -464,129 +461,7 @@ body.antigravity-theme .navbar-brand .brand-title {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     /* ========================================================
-       1. HIỆU ỨNG ANTIGRAVITY WEB: LƯỚI CHẤM TRÒN LI TI TƯƠNG TÁC THEO CHUỘT
-       (Di chuột vào đâu các chấm nổi lên & phát sáng như bị chạm vào)
-       ======================================================== */
-    (function initAntigravityDots() {
-        const canvas = document.getElementById('antigravityDotCanvas');
-        if (!canvas) return;
-
-        const ctx = canvas.getContext('2d');
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
-
-        const spacing = 32; // Khoảng cách giữa các chấm tròn
-        const dots = [];
-
-        // Con trỏ chuột (mặc định để xa màn hình khi chưa rê)
-        const mouse = {
-            x: -9999,
-            y: -9999,
-            radius: 130 // Bán kính tương tác của từ trường chuột
-        };
-
-        function createGrid() {
-            dots.length = 0;
-            const cols = Math.ceil(width / spacing) + 1;
-            const rows = Math.ceil(height / spacing) + 1;
-
-            for (let c = 0; c < cols; c++) {
-                for (let r = 0; r < rows; r++) {
-                    const baseX = c * spacing;
-                    const baseY = r * spacing;
-                    dots.push({
-                        baseX: baseX,
-                        baseY: baseY,
-                        x: baseX,
-                        y: baseY,
-                        baseRadius: 1.2,
-                        radius: 1.2,
-                        targetRadius: 1.2,
-                        alpha: 0.16,
-                        targetAlpha: 0.16,
-                        color: '148, 163, 184' // Màu slate nhạt mờ mờ
-                    });
-                }
-            }
-        }
-
-        createGrid();
-
-        window.addEventListener('resize', function() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            createGrid();
-        });
-
-        // Theo dõi tọa độ chuột trên toàn màn hình
-        window.addEventListener('mousemove', function(e) {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-        });
-
-        // Khi chuột rời khỏi cửa sổ
-        document.addEventListener('mouseleave', function() {
-            mouse.x = -9999;
-            mouse.y = -9999;
-        });
-
-        // Vòng lặp Animation Render 60fps
-        function render() {
-            ctx.clearRect(0, 0, width, height);
-
-            for (let i = 0; i < dots.length; i++) {
-                const dot = dots[i];
-
-                const dx = mouse.x - dot.x;
-                const dy = mouse.y - dot.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist < mouse.radius) {
-                    // Càng gần chuột thì lực đẩy và độ nở càng mạnh
-                    const factor = 1 - (dist / mouse.radius);
-                    
-                    // Chấm bị đẩy nhẹ ra xa theo hướng từ trường Antigravity
-                    const targetX = dot.baseX - (dx / dist) * factor * 14;
-                    const targetY = dot.baseY - (dy / dist) * factor * 14;
-
-                    // Chấm nổi to lên như bị chạm vào (từ 1.2px lên tối đa 3.6px)
-                    dot.targetRadius = dot.baseRadius + factor * 2.4;
-                    
-                    // Chấm sáng rực lên với màu Cyan neon
-                    dot.targetAlpha = 0.2 + factor * 0.75;
-                    dot.color = '56, 189, 248'; // Neon Cyan Antigravity
-                    
-                    dot.x += (targetX - dot.x) * 0.18;
-                    dot.y += (targetY - dot.y) * 0.18;
-                } else {
-                    // Khi không có chuột: đàn hồi êm dịu về vị trí và kích thước tĩnh
-                    dot.targetRadius = dot.baseRadius;
-                    dot.targetAlpha = 0.16;
-                    dot.color = '148, 163, 184';
-
-                    dot.x += (dot.baseX - dot.x) * 0.1;
-                    dot.y += (dot.baseY - dot.y) * 0.1;
-                }
-
-                // Interpolation mượt mà cho bán kính và độ sáng
-                dot.radius += (dot.targetRadius - dot.radius) * 0.15;
-                dot.alpha += (dot.targetAlpha - dot.alpha) * 0.15;
-
-                // Vẽ chấm tròn li ti
-                ctx.beginPath();
-                ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(${dot.color}, ${dot.alpha})`;
-                ctx.fill();
-            }
-
-            requestAnimationFrame(render);
-        }
-
-        render();
-    })();
-
-    /* ========================================================
-       2. KHỞI TẠO HIỆU ỨNG 3D HOVER TILT CARD BẰNG GSAP
+       1. KHỞI TẠO HIỆU ỨNG 3D HOVER TILT CARD BẰNG GSAP
        ======================================================== */
     function setup3DTiltCard(cardId, glareId, maxTilt = 16) {
         const card = document.getElementById(cardId);
