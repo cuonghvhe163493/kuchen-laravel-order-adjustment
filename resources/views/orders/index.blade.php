@@ -174,6 +174,16 @@
                                             </span>
                                         @endcan
                                     @endif
+
+                                    @if($order->adjustments->isNotEmpty())
+                                        <div class="mt-1">
+                                            <a href="{{ route('adjustments.index', ['order_id' => $order->id]) }}" 
+                                               class="badge bg-light text-primary border text-decoration-none" 
+                                               title="Xem các yêu cầu điều chỉnh của đơn hàng này">
+                                                <i class="bi bi-clock-history me-1"></i> Lịch sử ({{ $order->adjustments->count() }})
+                                            </a>
+                                        </div>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

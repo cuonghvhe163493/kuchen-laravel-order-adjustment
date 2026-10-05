@@ -148,39 +148,67 @@
             </div>
         </div>
 
-        <!-- Card 3: Lý do xin điều chỉnh & Nhật ký duyệt/từ chối -->
+        <!-- Card 3: Lý do xin điều chỉnh & Lịch sử kiểm toán (Audit Trail) - Bài 6 -->
         <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body">
-                <h6 class="fw-bold text-secondary mb-2">
-                    <i class="bi bi-chat-left-text me-1"></i> Lý do xin điều chỉnh:
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0 text-primary">
+                    <i class="bi bi-clock-history me-1"></i> Lịch Sử Xử Lý & Dấu Vết Kiểm Toán (Audit Trail)
                 </h6>
-                <div class="p-3 bg-light rounded border mb-3">
-                    {{ $adjustment->reason }}
+                <span class="badge bg-light text-secondary border">Lưu trữ Database</span>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <label class="fw-bold text-secondary small text-uppercase">Lý do xin điều chỉnh:</label>
+                    <div class="p-3 bg-light rounded border text-dark">
+                        {{ $adjustment->reason }}
+                    </div>
                 </div>
 
-                @if($adjustment->status === 'approved')
-                    <div class="alert alert-success d-flex align-items-center gap-2 mb-0" role="alert">
-                        <i class="bi bi-check-circle-fill fs-4"></i>
-                        <div>
-                            <strong>Đã phê duyệt bởi:</strong> {{ $adjustment->reviewer->name ?? 'Quản lý kho' }} 
-                            vào lúc <strong>{{ $adjustment->reviewed_at?->format('d/m/Y H:i:s') }}</strong>.
-                            <div class="small text-success">Đơn hàng gốc đã được cập nhật số lượng mới trong kho.</div>
+                <!-- Timeline trực quan theo thời gian thực -->
+                <div class="border-start border-2 border-primary ps-4 ms-3 mt-3">
+                    <!-- Bước 1: Khởi tạo -->
+                    <div class="position-relative mb-4">
+                        <span class="position-absolute top-0 start-0 translate-middle p-2 bg-primary border border-white rounded-circle"></span>
+                        <div class="small text-muted">{{ $adjustment->created_at->format('d/m/Y H:i:s') }}</div>
+                        <div class="fw-bold text-dark">Khởi tạo yêu cầu điều chỉnh</div>
+                        <div class="small text-secondary">
+                            Thực hiện bởi: <strong>{{ $adjustment->creator->name ?? 'N/A' }}</strong> 
+                            (Vai trò: <span class="badge bg-secondary text-uppercase">{{ $adjustment->creator->role ?? 'sale' }}</span>)
                         </div>
                     </div>
-                @elseif($adjustment->status === 'rejected')
-                    <div class="alert alert-danger mb-0" role="alert">
-                        <div class="d-flex align-items-center gap-2 mb-2">
-                            <i class="bi bi-x-circle-fill fs-4"></i>
-                            <div>
-                                <strong>Đã từ chối bởi:</strong> {{ $adjustment->reviewer->name ?? 'Quản lý kho' }} 
-                                vào lúc <strong>{{ $adjustment->reviewed_at?->format('d/m/Y H:i:s') }}</strong>.
+
+                    <!-- Bước 2: Phê duyệt / Từ chối / Chờ duyệt -->
+                    <div class="position-relative">
+                        @if($adjustment->status === 'approved')
+                            <span class="position-absolute top-0 start-0 translate-middle p-2 bg-success border border-white rounded-circle"></span>
+                            <div class="small text-muted">{{ $adjustment->reviewed_at?->format('d/m/Y H:i:s') }}</div>
+                            <div class="fw-bold text-success">Đã phê duyệt yêu cầu điều chỉnh</div>
+                            <div class="small text-secondary">
+                                Phê duyệt bởi: <strong>{{ $adjustment->reviewer->name ?? 'Quản lý kho' }}</strong> 
+                                (Vai trò: <span class="badge bg-success text-uppercase">{{ $adjustment->reviewer->role ?? 'kho' }}</span>)
                             </div>
-                        </div>
-                        <div class="p-2 bg-white rounded border border-danger-subtle small">
-                            <strong>Lý do từ chối:</strong> {{ $adjustment->rejected_reason }}
-                        </div>
+                            <div class="alert alert-success mt-2 py-2 px-3 small mb-0">
+                                <i class="bi bi-check-circle me-1"></i> Số lượng mới đã được cập nhật thành công vào các dòng đơn hàng trong kho.
+                            </div>
+                        @elseif($adjustment->status === 'rejected')
+                            <span class="position-absolute top-0 start-0 translate-middle p-2 bg-danger border border-white rounded-circle"></span>
+                            <div class="small text-muted">{{ $adjustment->reviewed_at?->format('d/m/Y H:i:s') }}</div>
+                            <div class="fw-bold text-danger">Đã từ chối yêu cầu điều chỉnh</div>
+                            <div class="small text-secondary">
+                                Từ chối bởi: <strong>{{ $adjustment->reviewer->name ?? 'Quản lý kho' }}</strong> 
+                                (Vai trò: <span class="badge bg-danger text-uppercase">{{ $adjustment->reviewer->role ?? 'kho' }}</span>)
+                            </div>
+                            <div class="alert alert-danger mt-2 py-2 px-3 small mb-0">
+                                <strong>Lý do từ chối:</strong> {{ $adjustment->rejected_reason }}
+                            </div>
+                        @else
+                            <span class="position-absolute top-0 start-0 translate-middle p-2 bg-warning border border-white rounded-circle"></span>
+                            <div class="small text-muted">Hiện tại</div>
+                            <div class="fw-bold text-warning-emphasis">Đang chờ Quản lý kho xem xét</div>
+                            <div class="small text-secondary">Yêu cầu đang ở trạng thái pending, chưa có quyết định phê duyệt hoặc từ chối.</div>
+                        @endif
                     </div>
-                @endif
+                </div>
             </div>
         </div>
 

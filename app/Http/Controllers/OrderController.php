@@ -28,6 +28,7 @@ class OrderController extends Controller
                 'items.productVariant.product',
                 'creator',
                 'pendingAdjustment',
+                'adjustments',
             ])
             ->when($search !== '', function ($query) use ($search) {
                 $query->where('order_code', 'like', "%{$search}%");

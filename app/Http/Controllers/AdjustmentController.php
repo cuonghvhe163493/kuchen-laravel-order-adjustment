@@ -34,17 +34,21 @@ class AdjustmentController extends Controller
         Gate::authorize('order.adjustment.view');
 
         $status = $request->query('status', '');
+        $orderId = $request->query('order_id', '');
 
         $adjustments = OrderAdjustment::query()
             ->with(['order', 'creator', 'reviewer'])
             ->when($status !== '', function ($query) use ($status) {
                 $query->where('status', $status);
             })
+            ->when($orderId !== '', function ($query) use ($orderId) {
+                $query->where('order_id', $orderId);
+            })
             ->latest('id')
             ->paginate(20)
             ->withQueryString();
 
-        return view('adjustments.index', compact('adjustments', 'status'));
+        return view('adjustments.index', compact('adjustments', 'status', 'orderId'));
     }
 
     /**

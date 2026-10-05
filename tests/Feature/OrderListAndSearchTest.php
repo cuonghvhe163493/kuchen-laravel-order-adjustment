@@ -114,7 +114,7 @@ class OrderListAndSearchTest extends TestCase
         $this->get('/orders');
 
         $queries = DB::getQueryLog();
-        // Kiểm tra số lượng query rất nhỏ (1 count query + 1 orders query + 1 items query + 1 variants query + 1 products query + 1 adjustments query)
-        $this->assertLessThanOrEqual(8, count($queries));
+        // Kiểm tra số lượng query cố định rất nhỏ (1 count + 1 orders + 1 items + 1 variants + 1 products + 1 creators + 1 pendingAdj + 1 allAdj + 1 user)
+        $this->assertLessThanOrEqual(10, count($queries));
     }
 }
