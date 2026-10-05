@@ -86,16 +86,18 @@
         </div>
 
         <!-- Card 2: So sánh chi tiết trước và sau điều chỉnh -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white py-3 border-bottom">
-                <h6 class="fw-bold mb-0 text-primary">
-                    <i class="bi bi-arrow-left-right me-1"></i> So Sánh Thay Đổi Chi Tiết (Trước — Sau)
-                </h6>
-                <small class="text-muted">Các mặt hàng sẽ được cập nhật chính xác vào đơn hàng khi Quản lý kho duyệt.</small>
+        <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="fw-bold mb-0 text-dark">
+                        <i class="bi bi-arrow-left-right me-1 text-primary"></i> So Sánh Thay Đổi Chi Tiết (Trước — Sau)
+                    </h6>
+                    <small class="text-muted">Các mặt hàng sẽ được cập nhật chính xác vào đơn hàng khi Quản lý kho duyệt.</small>
+                </div>
             </div>
             <div class="table-responsive">
-                <table class="table table-bordered align-middle mb-0">
-                    <thead class="table-light small text-uppercase text-muted">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-uppercase small text-muted border-bottom" style="font-size: 0.76rem; letter-spacing: 0.05em;">
                         <tr>
                             <th style="width: 40px;" class="text-center">#</th>
                             <th>Mặt hàng</th>
@@ -107,33 +109,38 @@
                     <tbody>
                         @foreach($adjustment->items as $index => $item)
                             <tr>
-                                <td class="text-center text-muted small">{{ $index + 1 }}</td>
+                                <td class="text-center text-muted small fw-medium">{{ $index + 1 }}</td>
                                 <td>
-                                    <div class="fw-bold">
+                                    <div class="fw-bold text-dark">
                                         {{ $item->orderItem->productVariant->product->name ?? 'Sản phẩm KÜCHEN' }}
+                                    </div>
+                                    <small class="text-muted font-monospace">Mã dòng: #{{ $item->order_item_id }}</small>
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-inline-flex align-items-center gap-1 p-1 bg-light rounded border">
+                                        <span class="badge bg-white text-secondary font-monospace border-0">{{ $item->old_sku }}</span>
+                                        <i class="bi bi-arrow-right text-muted" style="font-size: 0.75rem;"></i>
+                                        <span class="badge bg-primary text-white font-monospace">{{ $item->new_sku }}</span>
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge bg-light text-secondary border px-2 py-1">{{ $item->old_sku }}</span>
-                                    <i class="bi bi-arrow-right mx-1 text-primary"></i>
-                                    <span class="badge bg-primary text-white px-2 py-1">{{ $item->new_sku }}</span>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge bg-secondary px-2 py-1 fs-6">{{ $item->old_quantity }}</span>
-                                    <i class="bi bi-arrow-right mx-1 text-primary"></i>
-                                    <span class="badge bg-success px-2 py-1 fs-6">{{ $item->new_quantity }}</span>
+                                    <div class="d-inline-flex align-items-center gap-2">
+                                        <span class="badge bg-light text-dark border px-2 py-1 fs-6">{{ $item->old_quantity }}</span>
+                                        <i class="bi bi-arrow-right text-muted"></i>
+                                        <span class="badge bg-primary px-2 py-1 fs-6 shadow-sm">{{ $item->new_quantity }}</span>
+                                    </div>
                                 </td>
                                 <td class="text-center">
                                     @php
                                         $diff = $item->new_quantity - $item->old_quantity;
                                     @endphp
                                     @if($diff > 0)
-                                        <span class="badge bg-success-subtle text-success border border-success px-2 py-1">
-                                            +{{ $diff }} sản phẩm
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                                            <i class="bi bi-arrow-up-right me-1"></i>+{{ $diff }} món
                                         </span>
                                     @elseif($diff < 0)
-                                        <span class="badge bg-danger-subtle text-danger border border-danger px-2 py-1">
-                                            {{ $diff }} sản phẩm
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
+                                            <i class="bi bi-arrow-down-right me-1"></i>{{ $diff }} món
                                         </span>
                                     @else
                                         <span class="badge bg-light text-muted border px-2 py-1">

@@ -57,13 +57,13 @@
         </div>
 
         <!-- Bảng danh sách yêu cầu -->
-        <div class="card border-0 shadow-sm">
+        <div class="card border-0 shadow-sm overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light text-uppercase small text-muted">
+                    <thead class="bg-light text-uppercase small text-muted border-bottom" style="font-size: 0.76rem; letter-spacing: 0.05em;">
                         <tr>
                             <th class="ps-3" style="width: 50px;">#</th>
-                            <th style="width: 150px;">Mã yêu cầu</th>
+                            <th style="width: 160px;">Mã yêu cầu</th>
                             <th style="width: 150px;">Mã đơn hàng</th>
                             <th style="width: 140px;">Người gửi</th>
                             <th>Lý do điều chỉnh</th>
@@ -75,39 +75,39 @@
                     <tbody>
                         @forelse($adjustments as $index => $adj)
                             <tr>
-                                <td class="ps-3 text-muted small">
+                                <td class="ps-3 text-muted small fw-medium">
                                     {{ $adjustments->firstItem() + $index }}
                                 </td>
                                 <td>
-                                    <a href="{{ route('adjustments.show', $adj->id) }}" class="fw-bold text-decoration-none">
+                                    <a href="{{ route('adjustments.show', $adj->id) }}" class="fw-bold text-primary font-monospace text-decoration-none">
                                         {{ $adj->code }}
                                     </a>
                                 </td>
                                 <td>
-                                    <span class="badge bg-light text-dark border">
+                                    <span class="badge bg-light text-dark border font-monospace">
                                         {{ $adj->order->order_code ?? 'N/A' }}
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="small">{{ $adj->creator->name ?? 'N/A' }}</span>
+                                    <span class="small fw-medium text-dark">{{ $adj->creator->name ?? 'N/A' }}</span>
                                 </td>
                                 <td>
-                                    <span class="text-truncate d-inline-block small" style="max-width: 320px;">
+                                    <span class="text-truncate d-inline-block small text-secondary" style="max-width: 320px;">
                                         {{ $adj->reason }}
                                     </span>
                                 </td>
                                 <td>
                                     @if($adj->status === 'pending')
-                                        <span class="badge bg-warning text-dark border border-warning px-2 py-1">
-                                            <i class="bi bi-clock-history me-1"></i>Chờ duyệt
+                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-clock-history"></i> Chờ duyệt
                                         </span>
                                     @elseif($adj->status === 'approved')
-                                        <span class="badge bg-success px-2 py-1">
-                                            <i class="bi bi-check-circle me-1"></i>Đã duyệt
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-check2-circle"></i> Đã duyệt
                                         </span>
                                     @elseif($adj->status === 'rejected')
-                                        <span class="badge bg-danger px-2 py-1">
-                                            <i class="bi bi-x-circle me-1"></i>Từ chối
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-x-circle"></i> Từ chối
                                         </span>
                                     @endif
                                 </td>
@@ -115,7 +115,7 @@
                                     {{ $adj->created_at->format('d/m/Y H:i') }}
                                 </td>
                                 <td class="pe-3 text-end">
-                                    <a href="{{ route('adjustments.show', $adj->id) }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ route('adjustments.show', $adj->id) }}" class="btn btn-sm btn-outline-primary shadow-none">
                                         Xem & Xử lý
                                     </a>
                                 </td>

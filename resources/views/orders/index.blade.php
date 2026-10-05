@@ -60,31 +60,31 @@
         </div>
 
         <!-- Bảng danh sách đơn hàng -->
-        <div class="card border-0 shadow-sm">
+        <div class="card border-0 shadow-sm overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light text-uppercase small text-muted">
+                    <thead class="bg-light text-uppercase small text-muted border-bottom" style="font-size: 0.76rem; letter-spacing: 0.05em;">
                         <tr>
-                            <th class="ps-3" style="width: 50px;">STT</th>
-                            <th style="width: 150px;">Mã đơn</th>
+                            <th class="ps-3" style="width: 50px;">#</th>
+                            <th style="width: 160px;">Mã đơn</th>
                             <th style="width: 140px;">Kênh bán</th>
                             <th style="width: 150px;">Trạng thái đơn</th>
-                            <th>Sản phẩm / SKU / Số lượng</th>
-                            <th style="width: 180px;">Thời gian tạo</th>
+                            <th>Chi tiết mặt hàng</th>
+                            <th style="width: 170px;">Thời gian tạo</th>
                             <th class="pe-3 text-end" style="width: 220px;">Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y">
                         @forelse($orders as $index => $order)
                             <tr>
-                                <td class="ps-3 text-muted small">
+                                <td class="ps-3 text-muted small fw-medium">
                                     {{ $orders->firstItem() + $index }}
                                 </td>
                                 <td>
-                                    <span class="fw-bold text-primary">{{ $order->order_code }}</span>
+                                    <div class="fw-bold text-dark font-monospace">{{ $order->order_code }}</div>
                                     @if($order->creator)
-                                        <div class="small text-muted" style="font-size: 0.78rem;">
-                                            Bởi: {{ $order->creator->name }}
+                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                            <i class="bi bi-person me-1"></i>{{ $order->creator->name }}
                                         </div>
                                     @endif
                                 </td>
@@ -99,44 +99,43 @@
                                         ];
                                         $channelClass = $channelClasses[$order->channel] ?? 'bg-secondary';
                                     @endphp
-                                    <span class="badge {{ $channelClass }} px-2 py-1">
+                                    <span class="badge {{ $channelClass }}">
                                         {{ $channels[$order->channel] ?? strtoupper($order->channel) }}
                                     </span>
                                 </td>
                                 <td>
                                     @if($order->status === 'pending')
-                                        <span class="badge badge-status-pending px-2 py-1">
-                                            <i class="bi bi-hourglass-split me-1"></i>Chờ xử lý
+                                        <span class="badge badge-status-pending d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-hourglass-split"></i> Chờ xử lý
                                         </span>
                                     @elseif($order->status === 'confirmed')
-                                        <span class="badge badge-status-confirmed px-2 py-1">
-                                            <i class="bi bi-check-circle me-1"></i>Đã xác nhận
+                                        <span class="badge badge-status-confirmed d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-check2-circle"></i> Đã xác nhận
                                         </span>
                                     @elseif($order->status === 'exported')
-                                        <span class="badge badge-status-exported px-2 py-1">
-                                            <i class="bi bi-box-arrow-right me-1"></i>Đã xuất kho
+                                        <span class="badge badge-status-exported d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-box-arrow-right"></i> Đã xuất kho
                                         </span>
                                     @elseif($order->status === 'cancelled')
-                                        <span class="badge badge-status-cancelled px-2 py-1">
-                                            <i class="bi bi-x-circle me-1"></i>Đã hủy
+                                        <span class="badge badge-status-cancelled d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-x-circle"></i> Đã hủy
                                         </span>
                                     @else
-                                        <span class="badge bg-secondary px-2 py-1">{{ ucfirst($order->status) }}</span>
+                                        <span class="badge bg-secondary">{{ ucfirst($order->status) }}</span>
                                     @endif
                                 </td>
                                 <td>
                                     <ul class="list-unstyled mb-0 small">
                                         @foreach($order->items as $item)
-                                            <li class="mb-1 d-flex align-items-center gap-1">
-                                                <i class="bi bi-dot text-primary fs-5"></i>
-                                                <span class="fw-medium">
+                                            <li class="mb-1 d-flex align-items-center gap-2">
+                                                <span class="badge bg-light text-secondary border font-monospace" style="font-size: 0.72rem;">
+                                                    {{ $item->sku }}
+                                                </span>
+                                                <span class="fw-medium text-dark">
                                                     {{ $item->productVariant->product->name ?? 'Sản phẩm' }}
                                                 </span>
-                                                <span class="badge bg-light text-dark border px-1" style="font-size: 0.75rem;">
-                                                    SKU: {{ $item->sku }}
-                                                </span>
-                                                <span class="fw-bold text-danger ms-1">
-                                                    × {{ $item->quantity }}
+                                                <span class="badge bg-slate-100 text-dark fw-bold ms-auto" style="background-color: #f1f5f9;">
+                                                    ×{{ $item->quantity }}
                                                 </span>
                                             </li>
                                         @endforeach
@@ -148,11 +147,12 @@
                                 <td class="pe-3 text-end">
                                     @if($order->pendingAdjustment)
                                         {{-- Trường hợp 1: Đơn đang có yêu cầu chờ duyệt --}}
-                                        <span class="badge bg-warning text-dark border border-warning px-2 py-2 d-inline-flex align-items-center gap-1" 
-                                              title="Yêu cầu {{ $order->pendingAdjustment->code }} đang chờ kho xử lý">
+                                        <a href="{{ route('adjustments.show', $order->pendingAdjustment->id) }}" 
+                                           class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle text-decoration-none px-2 py-2 d-inline-flex align-items-center gap-1" 
+                                           title="Yêu cầu {{ $order->pendingAdjustment->code }} đang chờ kho xử lý">
                                             <i class="bi bi-clock-history"></i>
-                                            Đang chờ duyệt: <strong>{{ $order->pendingAdjustment->code }}</strong>
-                                        </span>
+                                            Chờ duyệt: <strong>{{ $order->pendingAdjustment->code }}</strong>
+                                        </a>
                                     @elseif(!$order->canBeAdjusted())
                                         {{-- Trường hợp 2: Đơn đã xuất kho hoặc đã hủy --}}
                                         <span class="badge bg-light text-muted border px-2 py-2 d-inline-flex align-items-center gap-1"
@@ -164,7 +164,7 @@
                                         {{-- Trường hợp 3: Đơn đủ điều kiện điều chỉnh --}}
                                         @can('order.adjustment.create')
                                             <a href="{{ route('adjustments.create', ['order_id' => $order->id]) }}" 
-                                               class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                                               class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 shadow-none">
                                                 <i class="bi bi-pencil-square"></i>
                                                 Yêu cầu điều chỉnh
                                             </a>
