@@ -89,7 +89,7 @@ Truy cập hệ thống tại: **`http://localhost:8000`**
 
 ## V. KIỂM THỬ TỰ ĐỘNG (AUTOMATED TESTING)
 
-Dự án bao gồm bộ kiểm thử tự động toàn diện với **27 test cases (111 assertions)** bao phủ toàn bộ 6 bài và các tiêu chuẩn kiểm thử bắt buộc:
+Dự án bao gồm bộ kiểm thử tự động toàn diện với **31 test cases (122 assertions)** bao phủ toàn bộ 6 bài và các tiêu chuẩn kiểm thử bắt buộc (kèm theo các test case nâng cao được đề bài khuyến khích như Rollback, Four-Eyes SoD, Concurrency):
 
 ```bash
 # Chạy toàn bộ test suites
@@ -110,6 +110,7 @@ php artisan test
    - Từ chối bắt buộc lý do; đơn hàng gốc không bị thay đổi.
    - Yêu cầu đã từ chối không thể duyệt lại.
    - Đơn hàng đổi trạng thái xuất kho trong lúc chờ duyệt sẽ bị chặn không cho duyệt.
+   - **Rollback toàn diện (Khuyến khích trong đề bài)**: Khi xảy ra lỗi giữa chừng trong transaction duyệt, toàn bộ thay đổi đều được rollback nguyên vẹn về ban đầu.
 5. `RoleAndPermissionTest`:
    - SALE không thể tự duyệt (bị chặn 403 Forbidden).
    - SALE không thể từ chối (bị chặn 403 Forbidden).

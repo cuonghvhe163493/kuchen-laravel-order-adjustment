@@ -211,4 +211,26 @@ class ApproveAndRejectAdjustmentTest extends TestCase
         // Số lượng đơn hàng gốc không bị thay đổi
         $this->assertEquals(2, $this->item1->fresh()->quantity);
     }
+
+    /**
+     * Tiêu chí V khuyến khích: Kiểm thử rollback toàn bộ nếu xảy ra lỗi trong quá trình phê duyệt
+     */
+    public function test_approval_rolls_back_completely_if_error_occurs(): void
+    {
+        $this->actingAs($this->warehouseUser);
+
+        // Cập nhật dòng item thứ 2 trong yêu cầu mang một mã SKU không tồn tại trong kho
+        \App\Models\OrderAdjustmentItem::where('order_adjustment_id', $this->adjustment->id)
+            ->where('order_item_id', $this->item2->id)
+            ->update(['new_sku' => 'KC-NONEXISTENT-999']);
+
+        $response = $this->post("/adjustments/{$this->adjustment->id}/approve");
+
+        // Request bắt được DomainException và redirect back kèm error
+        $response->assertSessionHas('error');
+
+        // Toàn bộ transaction phải rollback: item1 đã duyệt trước đó KHÔNG bị lưu (vẫn giữ nguyên 2)
+        $this->assertEquals(2, $this->item1->fresh()->quantity);
+        $this->assertTrue($this->adjustment->fresh()->isPending());
+    }
 }

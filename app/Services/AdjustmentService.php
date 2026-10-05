@@ -98,15 +98,21 @@ class AdjustmentService
             // 4. Cập nhật chính xác các dòng order_items theo chi tiết điều chỉnh
             foreach ($adjustment->items as $adjItem) {
                 $orderItem = OrderItem::where('id', $adjItem->order_item_id)->lockForUpdate()->first();
-                if ($orderItem) {
-                    $variant = ProductVariant::where('sku', $adjItem->new_sku)->first();
-                    $orderItem->update([
-                        'sku' => $adjItem->new_sku,
-                        'quantity' => $adjItem->new_quantity,
-                        'product_variant_id' => $variant ? $variant->id : $orderItem->product_variant_id,
-                        'price' => $variant ? $variant->price : $orderItem->price,
-                    ]);
+                if (!$orderItem) {
+                    throw new DomainException("Dòng sản phẩm đơn hàng #{$adjItem->order_item_id} không tồn tại hoặc đã bị xóa.");
                 }
+
+                $variant = ProductVariant::where('sku', $adjItem->new_sku)->first();
+                if (!$variant) {
+                    throw new DomainException("Mã SKU mới '{$adjItem->new_sku}' không tồn tại trong hệ thống sản phẩm.");
+                }
+
+                $orderItem->update([
+                    'sku' => $adjItem->new_sku,
+                    'quantity' => $adjItem->new_quantity,
+                    'product_variant_id' => $variant->id,
+                    'price' => $variant->price,
+                ]);
             }
 
             // 5. Cập nhật trạng thái yêu cầu sang APPROVED, lưu người duyệt và thời gian duyệt
