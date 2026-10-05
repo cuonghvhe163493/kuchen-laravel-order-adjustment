@@ -183,7 +183,26 @@
                                         <span class="badge bg-danger ms-2">admin</span>
                                     </a>
                                 </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item rounded-2 py-2 text-danger d-flex align-items-center gap-2">
+                                            <i class="bi bi-box-arrow-right"></i>
+                                            <span>Đăng xuất</span>
+                                        </button>
+                                    </form>
+                                </li>
                             </ul>
+                        </div>
+                    @else
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary">
+                                Đăng nhập
+                            </a>
+                            <a href="{{ route('register') }}" class="btn btn-sm btn-primary">
+                                Đăng ký
+                            </a>
                         </div>
                     @endauth
                 </div>

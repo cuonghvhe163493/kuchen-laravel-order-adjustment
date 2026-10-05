@@ -42,3 +42,12 @@ Route::get('/switch-user/{role}', function (string $role) {
     }
     return back()->with('error', "Không tìm thấy người dùng vai trò: {$role}");
 })->name('user.switch');
+
+// Xác thực & Quản trị tài khoản (Login / Register / Logout)
+Route::controller(\App\Http\Controllers\AuthController::class)->group(function () {
+    Route::get('/login', 'showLogin')->name('login');
+    Route::post('/login', 'login')->name('login.post');
+    Route::get('/register', 'showRegister')->name('register');
+    Route::post('/register', 'register')->name('register.post');
+    Route::post('/logout', 'logout')->name('logout');
+});

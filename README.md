@@ -89,7 +89,7 @@ Truy cập hệ thống tại: **`http://localhost:8000`**
 
 ## V. KIỂM THỬ TỰ ĐỘNG (AUTOMATED TESTING)
 
-Dự án bao gồm bộ kiểm thử tự động toàn diện với **31 test cases (122 assertions)** bao phủ toàn bộ 6 bài và các tiêu chuẩn kiểm thử bắt buộc (kèm theo các test case nâng cao được đề bài khuyến khích như Rollback, Four-Eyes SoD, Concurrency):
+Dự án bao gồm bộ kiểm thử tự động toàn diện với **36 test cases (140 assertions)** bao phủ toàn bộ 6 bài và các tính năng mở rộng (kèm theo các test case nâng cao được đề bài khuyến khích như Rollback, Four-Eyes SoD, Concurrency):
 
 ```bash
 # Chạy toàn bộ test suites
@@ -123,6 +123,11 @@ php artisan test
    - Trang chi tiết hiển thị đầy đủ thông tin kiểm toán (Người tạo, đơn liên quan, SKU và số lượng trước - sau, lý do).
    - Hiển thị người duyệt, thời gian duyệt, lý do từ chối lấy từ database.
    - Lọc lịch sử điều chỉnh theo từng đơn hàng.
+7. `AuthenticationFeatureTest`:
+   - Đăng nhập hợp lệ và ghi nhận session.
+   - Chặn đăng nhập với mật khẩu sai.
+   - Đăng ký tài khoản mới chỉ định vai trò (`sale`, `warehouse_manager`, `admin`).
+   - Đăng xuất an toàn và xóa session.
 
 ---
 

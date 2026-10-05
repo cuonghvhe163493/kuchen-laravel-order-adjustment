@@ -16,6 +16,11 @@ class EnsureDemoUserAuthenticated
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Nếu đang ở các trang auth (login, register, logout), không tự động login demo
+        if ($request->is('login') || $request->is('register') || $request->is('logout')) {
+            return $next($request);
+        }
+
         if (!Auth::check()) {
             $defaultUser = User::where('role', 'sale')->first() ?? User::first();
             if ($defaultUser) {
