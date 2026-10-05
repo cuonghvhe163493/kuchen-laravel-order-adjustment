@@ -130,7 +130,7 @@
         }
     </style>
 </head>
-<body>
+<body class="@yield('body-class')">
     <nav class="navbar navbar-expand-lg navbar-kuchen sticky-top mb-4">
         <div class="container-fluid px-3 px-md-4">
             <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('orders.index') }}">
@@ -141,20 +141,33 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}" href="{{ route('orders.index') }}">
-                            <i class="bi bi-box-seam me-1 text-primary"></i> Đơn hàng
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('adjustments.*') ? 'active' : '' }}" href="{{ route('adjustments.index') }}">
-                            <i class="bi bi-arrow-left-right me-1 text-primary"></i> Yêu cầu điều chỉnh
-                        </a>
-                    </li>
-                </ul>
+                @if(!request()->routeIs('login', 'register'))
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}" href="{{ route('orders.index') }}">
+                                <i class="bi bi-box-seam me-1 text-primary"></i> Đơn hàng
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('adjustments.*') ? 'active' : '' }}" href="{{ route('adjustments.index') }}">
+                                <i class="bi bi-arrow-left-right me-1 text-primary"></i> Yêu cầu điều chỉnh
+                            </a>
+                        </li>
+                    </ul>
+                @else
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3"></ul>
+                @endif
                 <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0 pt-2 pt-lg-0 border-top border-lg-0 border-slate-200">
-                    @auth
+                    @if(request()->routeIs('login', 'register'))
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="{{ route('login') }}" class="btn btn-sm {{ request()->routeIs('login') ? 'btn-primary' : 'btn-outline-primary' }}">
+                                Đăng nhập
+                            </a>
+                            <a href="{{ route('register') }}" class="btn btn-sm {{ request()->routeIs('register') ? 'btn-primary' : 'btn-outline-primary' }}">
+                                Đăng ký
+                            </a>
+                        </div>
+                    @elseif(auth()->check())
                         <div class="dropdown w-100 w-lg-auto">
                             <button class="btn btn-sm btn-white bg-white border dropdown-toggle d-flex align-items-center justify-content-between gap-2 w-100 w-lg-auto shadow-sm" type="button" data-bs-toggle="dropdown">
                                 <span class="d-flex align-items-center gap-2 text-dark">
