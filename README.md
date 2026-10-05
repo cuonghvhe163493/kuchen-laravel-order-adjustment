@@ -20,14 +20,16 @@ KÜCHEN PORTAL tiếp nhận đơn hàng đa kênh từ đội ngũ SALE trực 
 
 ## II. DANH SÁCH CHỨC NĂNG ĐÃ HOÀN THÀNH (100% TIÊU CHÍ)
 
-| Bài | Hạng mục | Điểm | Mô tả chi tiết kết quả |
+> 🧠 **Hệ thống BMAD Memory Logs:** Chi tiết ngữ cảnh kỹ thuật, thiết kế và test cases của từng bài được lưu trữ tại [docs/memory/README.md](docs/memory/README.md).
+
+| Bài | Hạng mục & Memory Log | Điểm | Mô tả chi tiết kết quả |
 | :---: | :--- | :---: | :--- |
-| **Bài 1** | **Database, Migration & Model** | **10/10** | Thiết kế chuẩn 7 bảng nghiệp vụ (`users`, `products`, `product_variants`, `orders`, `order_items`, `order_adjustments`, `order_adjustment_items`). Khóa ngoại, index hiệu năng `['order_id', 'status']`, đầy đủ Eloquent Relationships 1-N. |
-| **Bài 2** | **Danh sách & Tìm kiếm đơn hàng** | **10/10** | Giao diện Blade Bootstrap 5, tìm kiếm theo mã đơn, lọc theo kênh bán, phân trang đúng 20 đơn/trang (`withQueryString()`). Áp dụng Eager Loading triệt tiêu bẫy N+1 query. Nút tạo điều chỉnh hiển thị đúng ma trận điều kiện, ẩn khi đơn đã xuất kho/hủy. |
-| **Bài 3** | **Tạo yêu cầu điều chỉnh** | **15/15** | Validate qua `StoreAdjustmentRequest` (SKU phải tồn tại trong danh mục KÜCHEN, số lượng nguyên dương $\ge 1$, bắt buộc lý do). Dùng **Pessimistic Lock (`lockForUpdate()`)** chống 2 request pending đồng thời. Đơn gốc giữ nguyên 100%. |
-| **Bài 4** | **Phê duyệt / Từ chối yêu cầu** | **15/15** | Đóng gói trong `AdjustmentService` với `DB::transaction()` và Pessimistic Lock. Duyệt: cập nhật chính xác `order_items`. Từ chối: bắt buộc lý do qua `RejectAdjustmentRequest`. Khóa cứng trạng thái, không cho duyệt lại hay từ chối lại. |
-| **Bài 5** | **Phân quyền ma trận người dùng** | **10/10** | Thiết lập `OrderAdjustmentPolicy` và 4 Gates bắt buộc (`order.adjustment.view`, `create`, `approve`, `reject`). Kiểm soát cứng tại Backend qua `Gate::authorize()` (chặn 403 Forbidden, SALE không thể tự duyệt). Có thanh chuyển vai trò nhanh trên Navbar. |
-| **Bài 6** | **Lịch sử yêu cầu & Audit Trail** | **10/10** | Trang chi tiết hiển thị đầy đủ: Người tạo, đơn liên quan, so sánh trước - sau từng dòng hàng, lý do, người và thời gian duyệt/từ chối, lý do từ chối. Dấu vết lưu 100% vào database. Hỗ trợ xem lịch sử lọc theo từng đơn hàng. |
+| **Bài 1** | [Database, Migration & Model](docs/memory/01_bai_1_database_and_models.md) | **10/10** | Thiết kế chuẩn 7 bảng nghiệp vụ (`users`, `products`, `product_variants`, `orders`, `order_items`, `order_adjustments`, `order_adjustment_items`). Khóa ngoại, index hiệu năng `['order_id', 'status']`, đầy đủ Eloquent Relationships 1-N. |
+| **Bài 2** | [Danh sách & Tìm kiếm đơn hàng](docs/memory/02_bai_2_order_list_and_search.md) | **10/10** | Giao diện Blade Bootstrap 5, tìm kiếm theo mã đơn, lọc theo kênh bán, phân trang đúng 20 đơn/trang (`withQueryString()`). Áp dụng Eager Loading triệt tiêu bẫy N+1 query. Nút tạo điều chỉnh hiển thị đúng ma trận điều kiện, ẩn khi đơn đã xuất kho/hủy. |
+| **Bài 3** | [Tạo yêu cầu điều chỉnh](docs/memory/03_bai_3_create_adjustment.md) | **15/15** | Validate qua `StoreAdjustmentRequest` (SKU phải tồn tại trong danh mục KÜCHEN, số lượng nguyên dương $\ge 1$, bắt buộc lý do). Dùng **Pessimistic Lock (`lockForUpdate()`)** chống 2 request pending đồng thời. Đơn gốc giữ nguyên 100%. |
+| **Bài 4** | [Phê duyệt / Từ chối yêu cầu](docs/memory/04_bai_4_approve_and_reject.md) | **15/15** | Đóng gói trong `AdjustmentService` với `DB::transaction()` và Pessimistic Lock. Duyệt: cập nhật chính xác `order_items`. Từ chối: bắt buộc lý do qua `RejectAdjustmentRequest`. Khóa cứng trạng thái, không cho duyệt lại hay từ chối lại. |
+| **Bài 5** | [Phân quyền ma trận người dùng](docs/memory/05_bai_5_role_and_permission.md) | **10/10** | Thiết lập `OrderAdjustmentPolicy` và 4 Gates bắt buộc (`order.adjustment.view`, `create`, `approve`, `reject`). Kiểm soát cứng tại Backend qua `Gate::authorize()` (chặn 403 Forbidden, SALE không thể tự duyệt). Có thanh chuyển vai trò nhanh trên Navbar. |
+| **Bài 6** | [Lịch sử yêu cầu & Audit Trail](docs/memory/06_bai_6_history_and_handover.md) | **10/10** | Trang chi tiết hiển thị đầy đủ: Người tạo, đơn liên quan, so sánh trước - sau từng dòng hàng, lý do, người và thời gian duyệt/từ chối, lý do từ chối. Dấu vết lưu 100% vào database. Hỗ trợ xem lịch sử lọc theo từng đơn hàng. |
 
 ---
 
