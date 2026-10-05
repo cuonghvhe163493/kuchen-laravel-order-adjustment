@@ -213,8 +213,9 @@
         </div>
 
         <!-- Card 4: Bảng thao tác Phê duyệt / Từ chối (Bài 4, Bài 5) -->
+        <!-- Card 4: Bảng thao tác Phê duyệt / Từ chối (Bài 4, Bài 5) -->
         @if($adjustment->status === 'pending')
-            @can('order.adjustment.approve')
+            @can('order.adjustment.approve', $adjustment)
                 <div class="card border-0 shadow-sm bg-light mb-5">
                     <div class="card-body d-flex justify-content-between align-items-center p-4">
                         <div>
@@ -243,8 +244,14 @@
                 <div class="alert alert-warning d-flex align-items-center gap-2 mb-5" role="alert">
                     <i class="bi bi-shield-lock-fill fs-4"></i>
                     <div>
-                        <strong>Phân quyền (Bài 5):</strong> Tài khoản của bạn đang có vai trò <strong>{{ strtoupper(auth()->user()->role ?? 'KHÁCH') }}</strong> (không có quyền phê duyệt/từ chối).
-                        Chỉ <strong>Quản lý kho</strong> hoặc <strong>Admin</strong> mới có quyền phê duyệt hoặc từ chối yêu cầu này.
+                        <strong>Phân quyền & Kiểm soát nội bộ (Bài 5):</strong>
+                        @if(auth()->check() && auth()->id() === $adjustment->created_by)
+                            Bạn là <strong>người tạo yêu cầu này</strong>. Theo nguyên tắc tách biệt nhiệm vụ (Segregation of Duties / 4 mắt), người tạo không được tự phê duyệt yêu cầu của chính mình. Vui lòng chuyển sang vai trò <strong>Quản lý kho</strong> để phê duyệt.
+                        @elseif(auth()->check() && auth()->user()->role === 'sale')
+                            Tài khoản của bạn đang có vai trò <strong>SALE</strong>. Theo quy định Bài 5, SALE chỉ có quyền tạo yêu cầu, không có quyền phê duyệt/từ chối. Hãy chọn <strong>Quản lý kho</strong> trên thanh Menu để duyệt.
+                        @else
+                            Tài khoản hiện tại không có quyền phê duyệt yêu cầu điều chỉnh này.
+                        @endif
                     </div>
                 </div>
             @endcan

@@ -13,13 +13,6 @@ class OrderController extends Controller
      */
     public function index(Request $request): View
     {
-        if (!\Illuminate\Support\Facades\Auth::check()) {
-            $defaultUser = \App\Models\User::where('role', 'sale')->first() ?? \App\Models\User::first();
-            if ($defaultUser) {
-                \Illuminate\Support\Facades\Auth::login($defaultUser);
-            }
-        }
-
         $search = trim($request->query('search', ''));
         $channel = $request->query('channel', '');
 

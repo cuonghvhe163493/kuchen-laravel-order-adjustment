@@ -91,7 +91,10 @@ class AdjustmentController extends Controller
     {
         Gate::authorize('order.adjustment.create');
 
-        $creatorId = Auth::id() ?? User::where('role', 'sale')->value('id') ?? 1;
+        $creatorId = Auth::id();
+        if (!$creatorId) {
+            abort(401, 'Vui lòng đăng nhập để thực hiện chức năng này.');
+        }
 
         try {
             $adjustment = $this->adjustmentService->createAdjustment(
@@ -129,7 +132,7 @@ class AdjustmentController extends Controller
 
     /**
      * Phê duyệt yêu cầu điều chỉnh (Bài 4, Bài 5)
-     * Yêu cầu quyền: order.adjustment.approve (Quản lý kho, Admin - SALE BỊ CẤM)
+     * Yêu cầu quyền: order.adjustment.approve (Quản lý kho, Admin - SALE BỊ CẤM, Không tự duyệt)
      */
     public function approve(int $id): RedirectResponse
     {
@@ -137,7 +140,10 @@ class AdjustmentController extends Controller
 
         Gate::authorize('order.adjustment.approve', $adjustment);
 
-        $reviewerId = Auth::id() ?? User::where('role', 'warehouse_manager')->value('id') ?? 2;
+        $reviewerId = Auth::id();
+        if (!$reviewerId) {
+            abort(401, 'Vui lòng đăng nhập để thực hiện chức năng này.');
+        }
 
         try {
             $adjustment = $this->adjustmentService->approveAdjustment($id, $reviewerId);
@@ -159,7 +165,10 @@ class AdjustmentController extends Controller
 
         Gate::authorize('order.adjustment.reject', $adjustment);
 
-        $reviewerId = Auth::id() ?? User::where('role', 'warehouse_manager')->value('id') ?? 2;
+        $reviewerId = Auth::id();
+        if (!$reviewerId) {
+            abort(401, 'Vui lòng đăng nhập để thực hiện chức năng này.');
+        }
 
         try {
             $adjustment = $this->adjustmentService->rejectAdjustment(

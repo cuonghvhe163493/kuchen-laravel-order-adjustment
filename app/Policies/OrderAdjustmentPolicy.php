@@ -28,7 +28,10 @@ class OrderAdjustmentPolicy
     /**
      * Quyền: order.adjustment.approve
      * SALE: Không | Quản lý kho: Có | Admin: Có
-     * Đề bài: "SALE không thể tự phê duyệt"
+     * Tiêu chí cốt lõi:
+     * 1. SALE vĩnh viễn không thể phê duyệt.
+     * 2. Nguyên tắc Segregation of Duties (SoD) & Four-Eyes:
+     *    Người tạo yêu cầu tuyệt đối KHÔNG được tự phê duyệt yêu cầu của chính mình.
      */
     public function approve(User $user, ?OrderAdjustment $adjustment = null): bool
     {
@@ -36,12 +39,22 @@ class OrderAdjustmentPolicy
             return false;
         }
 
-        return in_array($user->role, ['warehouse_manager', 'admin']);
+        if (!in_array($user->role, ['warehouse_manager', 'admin'], true)) {
+            return false;
+        }
+
+        // Chặn tự phê duyệt yêu cầu do chính mình tạo ra (kể cả Admin)
+        if ($adjustment && $adjustment->created_by === $user->id) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
      * Quyền: order.adjustment.reject
      * SALE: Không | Quản lý kho: Có | Admin: Có
+     * Người tạo yêu cầu không được tự từ chối yêu cầu của mình.
      */
     public function reject(User $user, ?OrderAdjustment $adjustment = null): bool
     {
@@ -49,6 +62,14 @@ class OrderAdjustmentPolicy
             return false;
         }
 
-        return in_array($user->role, ['warehouse_manager', 'admin']);
+        if (!in_array($user->role, ['warehouse_manager', 'admin'], true)) {
+            return false;
+        }
+
+        if ($adjustment && $adjustment->created_by === $user->id) {
+            return false;
+        }
+
+        return true;
     }
 }
