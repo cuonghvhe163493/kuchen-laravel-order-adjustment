@@ -12,6 +12,8 @@ use App\Services\AdjustmentService;
 use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class AdjustmentController extends Controller
@@ -24,10 +26,13 @@ class AdjustmentController extends Controller
     }
 
     /**
-     * Danh sách yêu cầu điều chỉnh (Bài 4, Bài 6)
+     * Danh sách yêu cầu điều chỉnh (Bài 4, Bài 5, Bài 6)
+     * Yêu cầu quyền: order.adjustment.view
      */
     public function index(Request $request): View
     {
+        Gate::authorize('order.adjustment.view');
+
         $status = $request->query('status', '');
 
         $adjustments = OrderAdjustment::query()
@@ -43,10 +48,13 @@ class AdjustmentController extends Controller
     }
 
     /**
-     * Màn hình tạo yêu cầu điều chỉnh (Bài 3)
+     * Màn hình tạo yêu cầu điều chỉnh (Bài 3, Bài 5)
+     * Yêu cầu quyền: order.adjustment.create
      */
     public function create(Request $request): View|RedirectResponse
     {
+        Gate::authorize('order.adjustment.create');
+
         $orderId = $request->query('order_id');
         if (!$orderId) {
             return redirect()->route('orders.index')->with('error', 'Vui lòng chọn đơn hàng cần điều chỉnh.');
@@ -66,18 +74,20 @@ class AdjustmentController extends Controller
             return redirect()->route('orders.index')->with('error', "Đơn hàng đang có yêu cầu {$order->pendingAdjustment->code} đang chờ duyệt.");
         }
 
-        // Lấy danh sách tất cả các biến thể SKU hợp lệ trong hệ thống
         $variants = ProductVariant::with('product')->get();
 
         return view('adjustments.create', compact('order', 'variants'));
     }
 
     /**
-     * Xử lý lưu yêu cầu điều chỉnh (Bài 3)
+     * Xử lý lưu yêu cầu điều chỉnh (Bài 3, Bài 5)
+     * Yêu cầu quyền: order.adjustment.create
      */
     public function store(StoreAdjustmentRequest $request): RedirectResponse
     {
-        $creatorId = auth()->id() ?? User::where('role', 'sale')->value('id') ?? 1;
+        Gate::authorize('order.adjustment.create');
+
+        $creatorId = Auth::id() ?? User::where('role', 'sale')->value('id') ?? 1;
 
         try {
             $adjustment = $this->adjustmentService->createAdjustment(
@@ -96,7 +106,8 @@ class AdjustmentController extends Controller
     }
 
     /**
-     * Chi tiết yêu cầu điều chỉnh (Bài 4, Bài 6)
+     * Chi tiết yêu cầu điều chỉnh (Bài 4, Bài 5, Bài 6)
+     * Yêu cầu quyền: order.adjustment.view
      */
     public function show(int $id): View|RedirectResponse
     {
@@ -105,22 +116,24 @@ class AdjustmentController extends Controller
             'creator',
             'reviewer',
             'items.orderItem.productVariant.product',
-        ])->find($id);
+        ])->findOrFail($id);
 
-        if (!$adjustment) {
-            return redirect()->route('adjustments.index')->with('error', 'Yêu cầu điều chỉnh không tồn tại.');
-        }
+        Gate::authorize('order.adjustment.view', $adjustment);
 
         return view('adjustments.show', compact('adjustment'));
     }
 
     /**
-     * Phê duyệt yêu cầu điều chỉnh (Bài 4)
+     * Phê duyệt yêu cầu điều chỉnh (Bài 4, Bài 5)
+     * Yêu cầu quyền: order.adjustment.approve (Quản lý kho, Admin - SALE BỊ CẤM)
      */
     public function approve(int $id): RedirectResponse
     {
-        // Mặc định tài khoản Quản lý kho duyệt (ở Bài 5 sẽ dùng Policy/Gate xác thực)
-        $reviewerId = auth()->id() ?? User::where('role', 'warehouse_manager')->value('id') ?? 2;
+        $adjustment = OrderAdjustment::findOrFail($id);
+
+        Gate::authorize('order.adjustment.approve', $adjustment);
+
+        $reviewerId = Auth::id() ?? User::where('role', 'warehouse_manager')->value('id') ?? 2;
 
         try {
             $adjustment = $this->adjustmentService->approveAdjustment($id, $reviewerId);
@@ -133,11 +146,16 @@ class AdjustmentController extends Controller
     }
 
     /**
-     * Từ chối yêu cầu điều chỉnh (Bài 4)
+     * Từ chối yêu cầu điều chỉnh (Bài 4, Bài 5)
+     * Yêu cầu quyền: order.adjustment.reject (Quản lý kho, Admin - SALE BỊ CẤM)
      */
     public function reject(RejectAdjustmentRequest $request, int $id): RedirectResponse
     {
-        $reviewerId = auth()->id() ?? User::where('role', 'warehouse_manager')->value('id') ?? 2;
+        $adjustment = OrderAdjustment::findOrFail($id);
+
+        Gate::authorize('order.adjustment.reject', $adjustment);
+
+        $reviewerId = Auth::id() ?? User::where('role', 'warehouse_manager')->value('id') ?? 2;
 
         try {
             $adjustment = $this->adjustmentService->rejectAdjustment(
