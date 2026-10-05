@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AdjustmentController;
 use App\Http\Controllers\OrderController;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Bài 2: Danh sách và tìm kiếm đơn hàng
@@ -20,9 +22,9 @@ Route::post('/adjustments/{id}/reject', [AdjustmentController::class, 'reject'])
 
 // Chuyển đổi vai trò kiểm thử nhanh trên giao diện (Bài 5)
 Route::get('/switch-user/{role}', function (string $role) {
-    $user = \App\Models\User::where('role', $role)->first();
+    $user = User::where('role', $role)->first();
     if ($user) {
-        \Illuminate\Support\Facades\Auth::login($user);
+        Auth::login($user);
         return back()->with('success', "Đã chuyển sang tài khoản: {$user->name} (" . strtoupper($user->role) . ")");
     }
     return back()->with('error', "Không tìm thấy người dùng vai trò: {$role}");
