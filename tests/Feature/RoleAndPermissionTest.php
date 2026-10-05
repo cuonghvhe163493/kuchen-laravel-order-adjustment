@@ -173,4 +173,83 @@ class RoleAndPermissionTest extends TestCase
         $response->assertStatus(302);
         $this->assertTrue($this->adjustment->fresh()->isApproved());
     }
+
+    /**
+     * Tiêu chí nâng cao: Nguyên tắc Segregation of Duties (SoD) & Four-Eyes Principle
+     * Người tạo yêu cầu KHÔNG ĐƯỢC tự mình phê duyệt (kể cả Admin)
+     */
+    public function test_creator_cannot_self_approve_own_created_adjustment_even_if_admin(): void
+    {
+        // Admin tự tạo 1 yêu cầu điều chỉnh
+        $adminAdjustment = OrderAdjustment::create([
+            'code' => 'ADJ-ADMIN-001',
+            'order_id' => $this->order->id,
+            'created_by' => $this->adminUser->id,
+            'status' => 'pending',
+            'reason' => 'Admin tự tạo yêu cầu',
+        ]);
+
+        // Chính Admin đó cố tình tự duyệt yêu cầu của mình -> 403 Forbidden
+        $response = $this->actingAs($this->adminUser)
+            ->post("/adjustments/{$adminAdjustment->id}/approve");
+
+        $response->assertStatus(403);
+        $this->assertTrue($adminAdjustment->fresh()->isPending());
+
+        // Nhưng Quản lý kho vào duyệt thì ĐƯỢC PHÉP
+        $responseKho = $this->actingAs($this->warehouseUser)
+            ->post("/adjustments/{$adminAdjustment->id}/approve");
+
+        $responseKho->assertStatus(302);
+        $this->assertTrue($adminAdjustment->fresh()->isApproved());
+    }
+
+    /**
+     * Tiêu chí an toàn dữ liệu: Chặn việc cố tình truyền order_item_id của đơn khác
+     */
+    public function test_cross_order_item_manipulation_is_rejected_by_form_request(): void
+    {
+        $otherOrder = Order::create([
+            'order_code' => 'DH-OTHER-999',
+            'channel' => 'sale',
+            'status' => 'pending',
+            'created_by' => $this->saleUser->id,
+        ]);
+
+        $otherItem = OrderItem::create([
+            'order_id' => $otherOrder->id,
+            'product_variant_id' => 1,
+            'sku' => 'KC-001',
+            'quantity' => 5,
+            'price' => 15000000,
+        ]);
+
+        // Sale gửi order_id của $this->order nhưng mảng items lại chứa $otherItem->id
+        $response = $this->actingAs($this->saleUser)->post('/adjustments', [
+            'order_id' => $this->order->id,
+            'reason' => 'Cố tình inject item của đơn khác',
+            'items' => [
+                ['order_item_id' => $otherItem->id, 'new_sku' => 'KC-001', 'new_quantity' => 3],
+            ],
+        ]);
+
+        $response->assertSessionHasErrors('items.0.order_item_id');
+    }
+
+    /**
+     * Tiêu chí an toàn dữ liệu: Chặn việc gửi trùng lặp cùng 1 order_item_id nhiều lần trong 1 request
+     */
+    public function test_duplicate_order_items_in_request_are_rejected(): void
+    {
+        $response = $this->actingAs($this->saleUser)->post('/adjustments', [
+            'order_id' => $this->order->id,
+            'reason' => 'Cố tình gửi trùng lặp item',
+            'items' => [
+                ['order_item_id' => $this->orderItem->id, 'new_sku' => 'KC-001', 'new_quantity' => 3],
+                ['order_item_id' => $this->orderItem->id, 'new_sku' => 'KC-001', 'new_quantity' => 4],
+            ],
+        ]);
+
+        $response->assertSessionHasErrors('items.0.order_item_id');
+    }
 }
