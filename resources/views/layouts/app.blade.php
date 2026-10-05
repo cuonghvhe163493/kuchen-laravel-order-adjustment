@@ -74,10 +74,37 @@
                         </a>
                     </li>
                 </ul>
-                <div class="d-flex align-items-center text-white gap-3">
-                    <span class="small text-white-50">
-                        <i class="bi bi-shield-check text-warning"></i> Module: <strong>Điều chỉnh đơn hàng</strong>
-                    </span>
+                <div class="d-flex align-items-center gap-3">
+                    @auth
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-light dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i>
+                                <span>{{ auth()->user()->name }}</span>
+                                <span class="badge bg-warning text-dark text-uppercase">{{ auth()->user()->role }}</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li><h6 class="dropdown-header">Chuyển vai trò kiểm thử (Bài 5)</h6></li>
+                                <li>
+                                    <a class="dropdown-item d-flex justify-content-between align-items-center {{ auth()->user()->role === 'sale' ? 'active' : '' }}" href="{{ route('user.switch', 'sale') }}">
+                                        <span>SALE (Đi đơn)</span>
+                                        <span class="badge bg-primary ms-2">sale</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex justify-content-between align-items-center {{ auth()->user()->role === 'warehouse_manager' ? 'active' : '' }}" href="{{ route('user.switch', 'warehouse_manager') }}">
+                                        <span>QUẢN LÝ KHO</span>
+                                        <span class="badge bg-success ms-2">kho</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex justify-content-between align-items-center {{ auth()->user()->role === 'admin' ? 'active' : '' }}" href="{{ route('user.switch', 'admin') }}">
+                                        <span>ADMIN TỔNG</span>
+                                        <span class="badge bg-danger ms-2">admin</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    @endauth
                 </div>
             </div>
         </div>

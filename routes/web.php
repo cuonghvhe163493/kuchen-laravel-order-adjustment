@@ -17,3 +17,13 @@ Route::get('/adjustments', [AdjustmentController::class, 'index'])->name('adjust
 Route::get('/adjustments/{id}', [AdjustmentController::class, 'show'])->name('adjustments.show');
 Route::post('/adjustments/{id}/approve', [AdjustmentController::class, 'approve'])->name('adjustments.approve');
 Route::post('/adjustments/{id}/reject', [AdjustmentController::class, 'reject'])->name('adjustments.reject');
+
+// Chuyển đổi vai trò kiểm thử nhanh trên giao diện (Bài 5)
+Route::get('/switch-user/{role}', function (string $role) {
+    $user = \App\Models\User::where('role', $role)->first();
+    if ($user) {
+        \Illuminate\Support\Facades\Auth::login($user);
+        return back()->with('success', "Đã chuyển sang tài khoản: {$user->name} (" . strtoupper($user->role) . ")");
+    }
+    return back()->with('error', "Không tìm thấy người dùng vai trò: {$role}");
+})->name('user.switch');

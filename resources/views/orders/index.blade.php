@@ -162,11 +162,17 @@
                                         </span>
                                     @else
                                         {{-- Trường hợp 3: Đơn đủ điều kiện điều chỉnh --}}
-                                        <a href="{{ route('adjustments.create', ['order_id' => $order->id]) }}" 
-                                           class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
-                                            <i class="bi bi-pencil-square"></i>
-                                            Yêu cầu điều chỉnh
-                                        </a>
+                                        @can('order.adjustment.create')
+                                            <a href="{{ route('adjustments.create', ['order_id' => $order->id]) }}" 
+                                               class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1">
+                                                <i class="bi bi-pencil-square"></i>
+                                                Yêu cầu điều chỉnh
+                                            </a>
+                                        @else
+                                            <span class="badge bg-light text-muted border px-2 py-2" title="Chỉ SALE hoặc Admin mới có quyền tạo yêu cầu">
+                                                <i class="bi bi-lock me-1"></i> Chỉ SALE tạo
+                                            </span>
+                                        @endcan
                                     @endif
                                 </td>
                             </tr>

@@ -184,32 +184,42 @@
             </div>
         </div>
 
-        <!-- Card 4: Bảng thao tác Phê duyệt / Từ chối (Bài 4) -->
+        <!-- Card 4: Bảng thao tác Phê duyệt / Từ chối (Bài 4, Bài 5) -->
         @if($adjustment->status === 'pending')
-            <div class="card border-0 shadow-sm bg-light mb-5">
-                <div class="card-body d-flex justify-content-between align-items-center p-4">
-                    <div>
-                        <h6 class="fw-bold mb-1 text-dark">
-                            <i class="bi bi-shield-check me-1 text-primary"></i> Thao tác của Quản Lý Kho
-                        </h6>
-                        <small class="text-muted">Xem xét kỹ chi tiết điều chỉnh trước khi xác nhận phê duyệt hoặc từ chối.</small>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <!-- Nút Từ chối (Mở Modal) -->
-                        <button type="button" class="btn btn-outline-danger px-3 fw-medium" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                            <i class="bi bi-x-circle me-1"></i> Từ Chối Yêu Cầu
-                        </button>
-
-                        <!-- Form Phê duyệt -->
-                        <form method="POST" action="{{ route('adjustments.approve', $adjustment->id) }}" onsubmit="return confirm('Bạn có chắc chắn muốn PHÊ DUYỆT yêu cầu này? Số lượng trong đơn hàng sẽ được cập nhật ngay lập tức.');">
-                            @csrf
-                            <button type="submit" class="btn btn-success px-4 fw-bold shadow-sm">
-                                <i class="bi bi-check2-circle me-1"></i> Phê Duyệt Yêu Cầu
+            @can('order.adjustment.approve')
+                <div class="card border-0 shadow-sm bg-light mb-5">
+                    <div class="card-body d-flex justify-content-between align-items-center p-4">
+                        <div>
+                            <h6 class="fw-bold mb-1 text-dark">
+                                <i class="bi bi-shield-check me-1 text-primary"></i> Quyền Quản Lý Kho / Admin
+                            </h6>
+                            <small class="text-muted">Xem xét kỹ chi tiết điều chỉnh trước khi xác nhận phê duyệt hoặc từ chối.</small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <!-- Nút Từ chối (Mở Modal) -->
+                            <button type="button" class="btn btn-outline-danger px-3 fw-medium" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                <i class="bi bi-x-circle me-1"></i> Từ Chối Yêu Cầu
                             </button>
-                        </form>
+
+                            <!-- Form Phê duyệt -->
+                            <form method="POST" action="{{ route('adjustments.approve', $adjustment->id) }}" onsubmit="return confirm('Bạn có chắc chắn muốn PHÊ DUYỆT yêu cầu này? Số lượng trong đơn hàng sẽ được cập nhật ngay lập tức.');">
+                                @csrf
+                                <button type="submit" class="btn btn-success px-4 fw-bold shadow-sm">
+                                    <i class="bi bi-check2-circle me-1"></i> Phê Duyệt Yêu Cầu
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @else
+                <div class="alert alert-warning d-flex align-items-center gap-2 mb-5" role="alert">
+                    <i class="bi bi-shield-lock-fill fs-4"></i>
+                    <div>
+                        <strong>Phân quyền (Bài 5):</strong> Tài khoản của bạn đang có vai trò <strong>{{ strtoupper(auth()->user()->role ?? 'KHÁCH') }}</strong> (không có quyền phê duyệt/từ chối).
+                        Chỉ <strong>Quản lý kho</strong> hoặc <strong>Admin</strong> mới có quyền phê duyệt hoặc từ chối yêu cầu này.
+                    </div>
+                </div>
+            @endcan
 
             <!-- Modal Nhập Lý Do Từ Chối -->
             <div class="modal fade" id="rejectModal" tabindex="-1">
