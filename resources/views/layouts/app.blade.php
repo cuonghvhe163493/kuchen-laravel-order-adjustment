@@ -83,7 +83,7 @@
                                 <span class="badge bg-warning text-dark text-uppercase">{{ auth()->user()->role }}</span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow">
-                                <li><h6 class="dropdown-header">Chuyển vai trò kiểm thử (Bài 5)</h6></li>
+                                <li><h6 class="dropdown-header">Chuyển vai trò người dùng</h6></li>
                                 <li>
                                     <a class="dropdown-item d-flex justify-content-between align-items-center {{ auth()->user()->role === 'sale' ? 'active' : '' }}" href="{{ route('user.switch', 'sale') }}">
                                         <span>SALE (Đi đơn)</span>

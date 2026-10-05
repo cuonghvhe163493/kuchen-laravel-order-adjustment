@@ -148,7 +148,7 @@
             </div>
         </div>
 
-        <!-- Card 3: Lý do xin điều chỉnh & Lịch sử kiểm toán (Audit Trail) - Bài 6 -->
+        <!-- Card 3: Lý do điều chỉnh & Lịch sử kiểm toán (Audit Trail) -->
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
                 <h6 class="fw-bold mb-0 text-primary">
@@ -212,17 +212,16 @@
             </div>
         </div>
 
-        <!-- Card 4: Bảng thao tác Phê duyệt / Từ chối (Bài 4, Bài 5) -->
-        <!-- Card 4: Bảng thao tác Phê duyệt / Từ chối (Bài 4, Bài 5) -->
+        <!-- Card 4: Thao tác Xét duyệt / Từ chối -->
         @if($adjustment->status === 'pending')
             @can('order.adjustment.approve', $adjustment)
                 <div class="card border-0 shadow-sm bg-light mb-5">
                     <div class="card-body d-flex justify-content-between align-items-center p-4">
                         <div>
                             <h6 class="fw-bold mb-1 text-dark">
-                                <i class="bi bi-shield-check me-1 text-primary"></i> Quyền Quản Lý Kho / Admin
+                                <i class="bi bi-shield-check me-1 text-primary"></i> Xét duyệt yêu cầu
                             </h6>
-                            <small class="text-muted">Xem xét kỹ chi tiết điều chỉnh trước khi xác nhận phê duyệt hoặc từ chối.</small>
+                            <small class="text-muted">Xác nhận phê duyệt cập nhật số lượng hoặc từ chối yêu cầu này.</small>
                         </div>
                         <div class="d-flex gap-2">
                             <!-- Nút Từ chối (Mở Modal) -->
@@ -238,20 +237,6 @@
                                 </button>
                             </form>
                         </div>
-                    </div>
-                </div>
-            @else
-                <div class="alert alert-warning d-flex align-items-center gap-2 mb-5" role="alert">
-                    <i class="bi bi-shield-lock-fill fs-4"></i>
-                    <div>
-                        <strong>Phân quyền & Kiểm soát nội bộ (Bài 5):</strong>
-                        @if(auth()->check() && auth()->id() === $adjustment->created_by)
-                            Bạn là <strong>người tạo yêu cầu này</strong>. Theo nguyên tắc tách biệt nhiệm vụ (Segregation of Duties / 4 mắt), người tạo không được tự phê duyệt yêu cầu của chính mình. Vui lòng chuyển sang vai trò <strong>Quản lý kho</strong> để phê duyệt.
-                        @elseif(auth()->check() && auth()->user()->role === 'sale')
-                            Tài khoản của bạn đang có vai trò <strong>SALE</strong>. Theo quy định Bài 5, SALE chỉ có quyền tạo yêu cầu, không có quyền phê duyệt/từ chối. Hãy chọn <strong>Quản lý kho</strong> trên thanh Menu để duyệt.
-                        @else
-                            Tài khoản hiện tại không có quyền phê duyệt yêu cầu điều chỉnh này.
-                        @endif
                     </div>
                 </div>
             @endcan
