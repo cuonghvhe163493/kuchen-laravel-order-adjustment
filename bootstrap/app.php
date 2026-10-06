@@ -12,9 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->web(append: [
-            \App\Http\Middleware\EnsureDemoUserAuthenticated::class,
-        ]);
+        // Không sử dụng auto-login middleware, đảm bảo an ninh xác thực chuẩn mực doanh nghiệp
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -252,4 +252,42 @@ class RoleAndPermissionTest extends TestCase
 
         $response->assertSessionHasErrors('items.0.order_item_id');
     }
+
+    /**
+     * Tiêu chí RBAC Database: Các vai trò và quyền hạn được lưu đầy đủ trong CSDL
+     */
+    public function test_database_rbac_roles_and_permissions_exist_in_db(): void
+    {
+        $this->assertDatabaseHas('roles', ['name' => 'admin']);
+        $this->assertDatabaseHas('roles', ['name' => 'warehouse_manager']);
+        $this->assertDatabaseHas('roles', ['name' => 'sale']);
+
+        $this->assertDatabaseHas('permissions', ['name' => 'order.adjustment.create']);
+        $this->assertDatabaseHas('permissions', ['name' => 'order.adjustment.approve']);
+        $this->assertDatabaseHas('permissions', ['name' => 'order.adjustment.view']);
+
+        $this->assertTrue($this->saleUser->hasPermission('order.adjustment.create'));
+        $this->assertFalse($this->saleUser->hasPermission('order.adjustment.approve'));
+        $this->assertTrue($this->warehouseUser->hasPermission('order.adjustment.approve'));
+    }
+
+    /**
+     * Tiêu chí Quản trị: Người dùng đăng nhập có thể truy cập trang Ma trận Phân quyền /roles
+     */
+    public function test_authenticated_user_can_view_rbac_matrix_page(): void
+    {
+        $response = $this->actingAs($this->adminUser)->get('/roles');
+        $response->assertStatus(200);
+        $response->assertSee('Ma trận Phân quyền');
+        $response->assertSee('DATABASE-DRIVEN RBAC');
+    }
+
+    /**
+     * Tiêu chí Bảo mật: Khách chưa đăng nhập bị chặn khỏi trang /roles và chuyển hướng về /login
+     */
+    public function test_guest_is_redirected_to_login_when_accessing_roles_page(): void
+    {
+        $response = $this->get('/roles');
+        $response->assertRedirect('/login');
+    }
 }

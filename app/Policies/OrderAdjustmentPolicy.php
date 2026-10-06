@@ -8,30 +8,30 @@ use App\Models\User;
 class OrderAdjustmentPolicy
 {
     /**
-     * Quyền: order.adjustment.view
+     * Quyền: order.adjustment.view (Được phân quyền qua Database RBAC)
      * SALE: Có | Quản lý kho: Có | Admin: Có
      */
     public function view(User $user, ?OrderAdjustment $adjustment = null): bool
     {
-        return in_array($user->role, ['sale', 'warehouse_manager', 'admin']);
+        return $user->hasPermission('order.adjustment.view');
     }
 
     /**
-     * Quyền: order.adjustment.create
+     * Quyền: order.adjustment.create (Được phân quyền qua Database RBAC)
      * SALE: Có | Quản lý kho: Không | Admin: Có
      */
     public function create(User $user): bool
     {
-        return in_array($user->role, ['sale', 'admin']);
+        return $user->hasPermission('order.adjustment.create');
     }
 
     /**
-     * Quyền: order.adjustment.approve
+     * Quyền: order.adjustment.approve (Được phân quyền qua Database RBAC)
      * SALE: Không | Quản lý kho: Có | Admin: Có
      * Tiêu chí cốt lõi:
-     * 1. SALE vĩnh viễn không thể phê duyệt.
+     * 1. Phải có quyền `order.adjustment.approve` trong DB.
      * 2. Nguyên tắc Segregation of Duties (SoD) & Four-Eyes:
-     *    Người tạo yêu cầu tuyệt đối KHÔNG được tự phê duyệt yêu cầu của chính mình.
+     *    Người tạo yêu cầu tuyệt đối KHÔNG được tự phê duyệt yêu cầu của chính mình (kể cả Admin).
      */
     public function approve(User $user, ?OrderAdjustment $adjustment = null): bool
     {
@@ -39,11 +39,11 @@ class OrderAdjustmentPolicy
             return false;
         }
 
-        if (!in_array($user->role, ['warehouse_manager', 'admin'], true)) {
+        if (!$user->hasPermission('order.adjustment.approve')) {
             return false;
         }
 
-        // Chặn tự phê duyệt yêu cầu do chính mình tạo ra (kể cả Admin)
+        // Nguyên tắc Four-Eyes: Chặn tự phê duyệt yêu cầu do chính mình tạo ra
         if ($adjustment && $adjustment->created_by === $user->id) {
             return false;
         }
@@ -52,7 +52,7 @@ class OrderAdjustmentPolicy
     }
 
     /**
-     * Quyền: order.adjustment.reject
+     * Quyền: order.adjustment.reject (Được phân quyền qua Database RBAC)
      * SALE: Không | Quản lý kho: Có | Admin: Có
      * Người tạo yêu cầu không được tự từ chối yêu cầu của mình.
      */
@@ -62,7 +62,7 @@ class OrderAdjustmentPolicy
             return false;
         }
 
-        if (!in_array($user->role, ['warehouse_manager', 'admin'], true)) {
+        if (!$user->hasPermission('order.adjustment.reject')) {
             return false;
         }
 

@@ -65,6 +65,8 @@ class OrderListAndSearchTest extends TestCase
             'status' => 'cancelled',
             'created_by' => $this->user->id,
         ]);
+
+        $this->actingAs($this->user);
     }
 
     public function test_can_render_orders_index_page(): void

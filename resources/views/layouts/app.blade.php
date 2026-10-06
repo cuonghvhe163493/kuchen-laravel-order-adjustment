@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'KÜCHEN PORTAL - Quản lý Đơn hàng')</title>
+    <title>@yield('title', 'KÜCHEN ENTERPRISE - Hệ thống Quản trị & Điều phối Đơn hàng')</title>
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,10 +31,12 @@
             letter-spacing: -0.01em;
             -webkit-font-smoothing: antialiased;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         /* Modern Glassmorphic Clean White Navbar */
         .navbar-kuchen {
-            background: rgba(255, 255, 255, 0.9) !important;
+            background: rgba(255, 255, 255, 0.94) !important;
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid #e2e8f0 !important;
@@ -206,6 +208,22 @@
             color: #ffffff;
         }
 
+        /* Live Pulse Dot */
+        .status-dot-pulse {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
         /* Canvas Nền Chấm Tròn Li Ti Tương Tác Antigravity Toàn Bộ Màn Hình */
         .antigravity-dot-canvas {
             position: fixed;
@@ -216,25 +234,47 @@
             pointer-events: none;
             z-index: 0;
         }
-        nav, main {
+        nav, main, footer {
             position: relative;
             z-index: 1;
+        }
+
+        /* Footer KÜCHEN Doanh nghiệp */
+        .kuchen-footer {
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            color: #475569;
+            margin-top: auto;
+        }
+        .kuchen-footer a {
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+        .kuchen-footer a:hover {
+            color: #2563eb;
         }
     </style>
 </head>
 <body class="@yield('body-class')">
     <!-- Canvas Chấm Tròn Tương Tác 3D & Làn Sóng Nước Khi Click (Antigravity Global Canvas) -->
     <canvas id="globalAntigravityCanvas" class="antigravity-dot-canvas"></canvas>
+
+    <!-- HEADER / NAVIGATION BAR CHUẨN DOANH NGHIỆP -->
     <nav class="navbar navbar-expand-lg navbar-kuchen sticky-top mb-4">
         <div class="container-fluid px-3 px-md-4">
-            <a class="navbar-brand fw-bold fs-5 text-dark font-monospace text-decoration-none" href="{{ route('orders.index') }}">
-                <span class="text-primary fw-bolder">KÜCHEN</span> PORTAL
+            <a class="navbar-brand fw-bold fs-5 text-dark font-monospace text-decoration-none d-flex align-items-center gap-2" href="{{ route('orders.index') }}">
+                <span class="text-primary fw-bolder">KÜCHEN</span>
+                <span class="text-secondary fw-semibold">PORTAL</span>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle py-1 px-2 font-sans" style="font-size: 0.68rem; letter-spacing: 0.5px;">ENTERPRISE v1.2</span>
             </a>
+
             <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarNav">
-                @if(!request()->routeIs('login', 'register'))
+                @auth
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}" href="{{ route('orders.index') }}">
@@ -246,56 +286,78 @@
                                 <i class="bi bi-arrow-left-right me-1 text-primary"></i> Yêu cầu điều chỉnh
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('roles.*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
+                                <i class="bi bi-shield-check me-1 text-success"></i> Phân quyền DB (RBAC)
+                            </a>
+                        </li>
                     </ul>
                 @else
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3"></ul>
-                @endif
+                @endauth
+
+                <!-- Cụm Trạng thái Hệ thống & Hồ sơ Nhân sự -->
                 <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0 pt-2 pt-lg-0 border-top border-lg-0 border-slate-200">
-                    @if(request()->routeIs('login', 'register'))
-                        <div class="d-flex align-items-center gap-2">
-                            <a href="{{ route('login') }}" class="btn btn-sm {{ request()->routeIs('login') ? 'btn-primary' : 'btn-outline-primary' }}">
-                                Đăng nhập
-                            </a>
-                            <a href="{{ route('register') }}" class="btn btn-sm {{ request()->routeIs('register') ? 'btn-primary' : 'btn-outline-primary' }}">
-                                Đăng ký
-                            </a>
-                        </div>
-                    @elseif(auth()->check())
+                    <!-- Trạng thái Kết nối Realtime -->
+                    <div class="d-none d-xl-flex align-items-center gap-2 px-2 py-1 rounded bg-light border text-muted small" style="font-size: 0.75rem;">
+                        <span class="status-dot-pulse"></span>
+                        <span>Máy chủ KÜCHEN <strong>Trực tuyến</strong></span>
+                    </div>
+
+                    @auth
+                        <!-- Dropdown Hồ sơ Nhân sự Đẳng Cấp Cao -->
                         <div class="dropdown w-100 w-lg-auto">
                             <button class="btn btn-sm btn-white bg-white border dropdown-toggle d-flex align-items-center justify-content-between gap-2 w-100 w-lg-auto shadow-sm" type="button" data-bs-toggle="dropdown">
-                                <span class="d-flex align-items-center gap-2 text-dark">
-                                    <i class="bi bi-person-circle text-primary"></i>
-                                    <span class="fw-semibold">{{ auth()->user()->name }}</span>
+                                <div class="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center" style="width: 26px; height: 26px; font-size: 0.78rem;">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                </div>
+                                <span class="fw-semibold text-dark">{{ auth()->user()->name }}</span>
+                                <span class="badge {{ auth()->user()->role === 'admin' ? 'bg-danger' : (auth()->user()->role === 'warehouse_manager' ? 'bg-success' : 'bg-primary') }} text-uppercase ms-1" style="font-size: 0.7rem;">
+                                    {{ auth()->user()->role }}
                                 </span>
-                                <span class="badge bg-primary-subtle text-primary text-uppercase ms-auto">{{ auth()->user()->role }}</span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border rounded-3 p-2 w-100 w-lg-auto" style="min-width: 240px;">
-                                <li><h6 class="dropdown-header text-uppercase small fw-bold text-muted">Chuyển vai trò</h6></li>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border rounded-3 p-2 w-100 w-lg-auto" style="min-width: 270px;">
+                                <li class="px-2 py-2 border-bottom mb-2 bg-light rounded-2">
+                                    <div class="fw-bold text-dark">{{ auth()->user()->name }}</div>
+                                    <div class="text-muted small font-monospace" style="font-size: 0.75rem;">{{ auth()->user()->email }}</div>
+                                    <div class="mt-1 d-flex align-items-center gap-1">
+                                        <i class="bi bi-shield-check text-primary"></i>
+                                        <span class="small fw-semibold text-primary">{{ auth()->user()->role_display_name }}</span>
+                                    </div>
+                                </li>
+
+                                <li><a class="dropdown-item rounded-2 py-2 d-flex align-items-center gap-2" href="{{ route('roles.index') }}">
+                                    <i class="bi bi-key text-success"></i>
+                                    <span>Xem quyền hạn trong DB</span>
+                                </a></li>
+
+                                <li><h6 class="dropdown-header text-uppercase small fw-bold text-muted mt-2 pt-1 border-top">Chuyển vai trò thử nghiệm</h6></li>
                                 <li>
-                                    <a class="dropdown-item rounded-2 py-2 d-flex justify-content-between align-items-center {{ auth()->user()->role === 'sale' ? 'active' : '' }}" href="{{ route('user.switch', 'sale') }}">
-                                        <span class="fw-medium">SALE (Đi đơn)</span>
-                                        <span class="badge bg-primary ms-2">sale</span>
+                                    <a class="dropdown-item rounded-2 py-1 d-flex justify-content-between align-items-center {{ auth()->user()->role === 'sale' ? 'active' : '' }}" href="{{ route('user.switch', 'sale') }}">
+                                        <span class="small">Nhân viên SALE</span>
+                                        <span class="badge bg-primary">sale</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item rounded-2 py-2 d-flex justify-content-between align-items-center {{ auth()->user()->role === 'warehouse_manager' ? 'active' : '' }}" href="{{ route('user.switch', 'warehouse_manager') }}">
-                                        <span class="fw-medium">QUẢN LÝ KHO</span>
-                                        <span class="badge bg-success ms-2">kho</span>
+                                    <a class="dropdown-item rounded-2 py-1 d-flex justify-content-between align-items-center {{ auth()->user()->role === 'warehouse_manager' ? 'active' : '' }}" href="{{ route('user.switch', 'warehouse_manager') }}">
+                                        <span class="small">Quản lý KHO</span>
+                                        <span class="badge bg-success">kho</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item rounded-2 py-2 d-flex justify-content-between align-items-center {{ auth()->user()->role === 'admin' ? 'active' : '' }}" href="{{ route('user.switch', 'admin') }}">
-                                        <span class="fw-medium">ADMIN TỔNG</span>
-                                        <span class="badge bg-danger ms-2">admin</span>
+                                    <a class="dropdown-item rounded-2 py-1 d-flex justify-content-between align-items-center {{ auth()->user()->role === 'admin' ? 'active' : '' }}" href="{{ route('user.switch', 'admin') }}">
+                                        <span class="small">Quản trị ADMIN</span>
+                                        <span class="badge bg-danger">admin</span>
                                     </a>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
+
+                                <li><hr class="dropdown-divider my-2"></li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                                         @csrf
-                                        <button type="submit" class="dropdown-item rounded-2 py-2 text-danger d-flex align-items-center gap-2">
+                                        <button type="submit" class="dropdown-item rounded-2 py-2 text-danger d-flex align-items-center gap-2 fw-semibold">
                                             <i class="bi bi-box-arrow-right"></i>
-                                            <span>Đăng xuất</span>
+                                            <span>Đăng xuất an toàn</span>
                                         </button>
                                     </form>
                                 </li>
@@ -303,11 +365,11 @@
                         </div>
                     @else
                         <div class="d-flex align-items-center gap-2">
-                            <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary">
-                                Đăng nhập
+                            <a href="{{ route('login') }}" class="btn btn-sm {{ request()->routeIs('login') ? 'btn-primary' : 'btn-outline-primary' }}">
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
                             </a>
-                            <a href="{{ route('register') }}" class="btn btn-sm btn-primary">
-                                Đăng ký
+                            <a href="{{ route('register') }}" class="btn btn-sm {{ request()->routeIs('register') ? 'btn-primary' : 'btn-outline-secondary' }}">
+                                <i class="bi bi-person-plus me-1"></i> Đăng ký
                             </a>
                         </div>
                     @endauth
@@ -316,25 +378,99 @@
         </div>
     </nav>
 
-    <main class="container-fluid px-3 px-md-4 pb-5">
+    <!-- KHU VỰC NỘI DUNG CHÍNH (MAIN BODY) -->
+    <main class="container-fluid px-3 px-md-4 pb-5 flex-grow-1">
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
-                <i class="bi bi-check-circle-fill fs-5"></i>
-                <div>{{ session('success') }}</div>
+            <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 shadow-sm border-0" role="alert">
+                <i class="bi bi-check-circle-fill fs-5 text-success"></i>
+                <div class="fw-medium">{{ session('success') }}</div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2" role="alert">
-                <i class="bi bi-exclamation-triangle-fill fs-5"></i>
-                <div>{{ session('error') }}</div>
+            <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2 shadow-sm border-0" role="alert">
+                <i class="bi bi-exclamation-triangle-fill fs-5 text-danger"></i>
+                <div class="fw-medium">{{ session('error') }}</div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
         @yield('content')
     </main>
+
+    <!-- FOOTER CHUẨN DOANH NGHIỆP KÜCHEN HOÀN CHỈNH -->
+    <footer class="kuchen-footer pt-5 pb-4 mt-5">
+        <div class="container-fluid px-3 px-md-4">
+            <div class="row g-4 mb-4">
+                <!-- Cột 1: Thương hiệu KÜCHEN & Tiêu chuẩn Đức -->
+                <div class="col-12 col-lg-4">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <h5 class="fw-bold text-dark font-monospace mb-0">
+                            <span class="text-primary fw-bolder">KÜCHEN</span> ENTERPRISE
+                        </h5>
+                    </div>
+                    <p class="small text-muted mb-3" style="max-width: 360px;">
+                        Hệ thống lõi quản trị chuỗi cung ứng, điều phối đơn hàng đa kênh (Shopee, TikTok, Lazada, Bán lẻ) và kiểm soát kho vận chính xác theo tiêu chuẩn kỹ nghệ CHLB Đức.
+                    </p>
+                    <div class="d-flex gap-2 align-items-center">
+                        <span class="badge bg-light text-secondary border px-2 py-1">
+                            <i class="bi bi-shield-check text-success me-1"></i>ISO 9001:2015
+                        </span>
+                        <span class="badge bg-light text-secondary border px-2 py-1">
+                            <i class="bi bi-cpu text-primary me-1"></i>German Precision
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Cột 2: Phân hệ Nghiệp vụ & Quản trị -->
+                <div class="col-6 col-lg-2">
+                    <h6 class="fw-bold text-dark mb-3 small text-uppercase">Phân hệ Nghiệp vụ</h6>
+                    <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+                        <li><a href="{{ route('orders.index') }}"><i class="bi bi-chevron-right text-primary me-1" style="font-size: 0.7rem;"></i>Tra cứu đơn hàng</a></li>
+                        <li><a href="{{ route('adjustments.index') }}"><i class="bi bi-chevron-right text-primary me-1" style="font-size: 0.7rem;"></i>Yêu cầu điều chỉnh</a></li>
+                        <li><a href="{{ route('roles.index') }}"><i class="bi bi-chevron-right text-primary me-1" style="font-size: 0.7rem;"></i>Ma trận Phân quyền DB</a></li>
+                        <li><span class="text-muted"><i class="bi bi-lock me-1"></i>Four-Eyes Principle</span></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 3: Trung tâm Kho vận & Hotline -->
+                <div class="col-6 col-lg-3">
+                    <h6 class="fw-bold text-dark mb-3 small text-uppercase">Kho vận & Hỗ trợ kỹ thuật</h6>
+                    <ul class="list-unstyled small d-flex flex-column gap-2 mb-0">
+                        <li><i class="bi bi-geo-alt text-primary me-2"></i><strong>Kho Bắc:</strong> KCN Quang Minh, Hà Nội</li>
+                        <li><i class="bi bi-geo-alt text-primary me-2"></i><strong>Kho Nam:</strong> KCN Sóng Thần, Bình Dương</li>
+                        <li><i class="bi bi-telephone text-primary me-2"></i><strong>Tổng đài:</strong> 1900 8888 (24/7)</li>
+                        <li><i class="bi bi-envelope text-primary me-2"></i><strong>Kỹ thuật:</strong> support@kuchen.vn</li>
+                    </ul>
+                </div>
+
+                <!-- Cột 4: Tiêu chuẩn Bảo mật & Vận hành -->
+                <div class="col-12 col-lg-3">
+                    <h6 class="fw-bold text-dark mb-3 small text-uppercase">Bảo mật & Công nghệ</h6>
+                    <p class="small text-muted mb-2">
+                        Kiến trúc RBAC thuần Database MySQL, phòng chống tấn công Brute-force & CSRF token động, bảo vệ phân quyền đa tầng.
+                    </p>
+                    <div class="p-2 rounded bg-light border small text-muted font-monospace" style="font-size: 0.75rem;">
+                        <div>&bull; Mã hóa: Bcrypt (Rounds: 12)</div>
+                        <div>&bull; Session: Database Encrypted</div>
+                        <div>&bull; Phiên bản: v1.2.0-Enterprise</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chân trang Bản quyền Copyright -->
+            <div class="pt-3 border-top border-slate-200 d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 small text-muted">
+                <div>
+                    &copy; {{ date('Y') }} <strong>KÜCHEN VIETNAM</strong> &bull; Bản quyền thuộc về Tập đoàn Thiết bị Gia dụng KÜCHEN.
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Hệ thống Vận hành Chính thức</span>
+                    <a href="#top" class="text-muted text-decoration-none"><i class="bi bi-arrow-up-circle me-1"></i>Đầu trang</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

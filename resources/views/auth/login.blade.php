@@ -290,31 +290,71 @@
                         <div class="position-relative my-4 text-center">
                             <hr class="text-muted opacity-25">
                             <span class="position-absolute top-50 start-50 translate-middle px-3 small text-muted fw-semibold bg-white" style="font-size: 0.72rem; letter-spacing: 0.5px;">
-                                KIỂM THỬ NHANH VAI TRÒ (1-CLICK)
+                                TÀI KHOẢN MẪU KIỂM THỬ (1-CLICK AUTOFILL)
                             </span>
                         </div>
 
-                        <!-- Cụm Kiểm Thử Nhanh 1-Click Độc Lập Cho Người Chấm/Test -->
-                        <div class="d-grid gap-2">
-                            <a href="{{ route('user.switch', ['role' => 'sale', 'redirect' => 'orders']) }}" class="btn btn-outline-primary btn-sm d-flex justify-content-between align-items-center py-2 px-3">
-                                <span><i class="bi bi-person-workspace me-2 text-primary"></i>Đăng nhập nhanh với vai trò <strong>SALE</strong></span>
-                                <span class="badge bg-primary">sale</span>
-                            </a>
-                            <a href="{{ route('user.switch', ['role' => 'warehouse_manager', 'redirect' => 'orders']) }}" class="btn btn-outline-success btn-sm d-flex justify-content-between align-items-center py-2 px-3">
-                                <span><i class="bi bi-boxes me-2 text-success"></i>Đăng nhập nhanh với vai trò <strong>QUẢN LÝ KHO</strong></span>
-                                <span class="badge bg-success">kho</span>
-                            </a>
-                            <a href="{{ route('user.switch', ['role' => 'admin', 'redirect' => 'orders']) }}" class="btn btn-outline-danger btn-sm d-flex justify-content-between align-items-center py-2 px-3">
-                                <span><i class="bi bi-shield-lock me-2 text-danger"></i>Đăng nhập nhanh với vai trò <strong>ADMIN TỔNG</strong></span>
-                                <span class="badge bg-danger">admin</span>
-                            </a>
+                        <!-- Cụm Điền Nhanh Tài Khoản Demo Vào Form Chính Quy -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <button type="button" class="btn btn-outline-primary btn-sm w-100 py-2 d-flex flex-column align-items-center demo-fill-btn" data-email="sale@kuchen.vn" data-role="SALE" title="Click để tự động điền tài khoản Sale">
+                                    <i class="bi bi-person-workspace mb-1"></i>
+                                    <span class="fw-bold" style="font-size: 0.75rem;">SALE</span>
+                                    <span class="text-muted" style="font-size: 0.65rem;">Tạo đơn</span>
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-outline-success btn-sm w-100 py-2 d-flex flex-column align-items-center demo-fill-btn" data-email="kho@kuchen.vn" data-role="QUẢN LÝ KHO" title="Click để tự động điền tài khoản Quản lý kho">
+                                    <i class="bi bi-boxes mb-1"></i>
+                                    <span class="fw-bold" style="font-size: 0.75rem;">KHO</span>
+                                    <span class="text-muted" style="font-size: 0.65rem;">Phê duyệt</span>
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-outline-danger btn-sm w-100 py-2 d-flex flex-column align-items-center demo-fill-btn" data-email="admin@kuchen.vn" data-role="ADMIN" title="Click để tự động điền tài khoản Quản trị viên">
+                                    <i class="bi bi-shield-lock mb-1"></i>
+                                    <span class="fw-bold" style="font-size: 0.75rem;">ADMIN</span>
+                                    <span class="text-muted" style="font-size: 0.65rem;">Toàn quyền</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="autofillNotice" class="alert alert-info py-2 px-3 small d-none mb-3 border-0 rounded-3">
+                            <i class="bi bi-info-circle-fill me-1"></i> <span id="autofillNoticeText"></span>
+                        </div>
+
+                        <!-- Tùy chọn kiểm thử nhanh tức thì cho ban giám khảo / tester -->
+                        <div class="accordion accordion-flush mb-2" id="quickTestAccordion">
+                            <div class="accordion-item border-0 bg-transparent">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed py-1 px-0 bg-transparent shadow-none small text-muted" type="button" data-bs-toggle="collapse" data-bs-target="#collapseQuickLinks" style="font-size: 0.75rem;">
+                                        <i class="bi bi-lightning-charge me-1 text-warning"></i> Chế độ Đăng nhập nhanh 1-Click (Dành cho Tester)
+                                    </button>
+                                </h2>
+                                <div id="collapseQuickLinks" class="accordion-collapse collapse">
+                                    <div class="accordion-body px-0 pt-2 pb-0 d-grid gap-1">
+                                        <a href="{{ route('user.switch', ['role' => 'sale', 'redirect' => 'orders']) }}" class="btn btn-light btn-sm text-start py-1 px-2 border d-flex justify-content-between align-items-center">
+                                            <span class="small">Đăng nhập nhanh với vai trò SALE</span>
+                                            <span class="badge bg-primary" style="font-size: 0.68rem;">sale</span>
+                                        </a>
+                                        <a href="{{ route('user.switch', ['role' => 'warehouse_manager', 'redirect' => 'orders']) }}" class="btn btn-light btn-sm text-start py-1 px-2 border d-flex justify-content-between align-items-center">
+                                            <span class="small">Đăng nhập nhanh với vai trò QUẢN LÝ KHO</span>
+                                            <span class="badge bg-success" style="font-size: 0.68rem;">kho</span>
+                                        </a>
+                                        <a href="{{ route('user.switch', ['role' => 'admin', 'redirect' => 'orders']) }}" class="btn btn-light btn-sm text-start py-1 px-2 border d-flex justify-content-between align-items-center">
+                                            <span class="small">Đăng nhập nhanh với vai trò ADMIN TỔNG</span>
+                                            <span class="badge bg-danger" style="font-size: 0.68rem;">admin</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="text-center mt-4 position-relative z-3">
-                        <span class="text-muted small">Chưa có tài khoản kiểm thử? </span>
+                    <div class="text-center mt-3 position-relative z-3">
+                        <span class="text-muted small">Nhân sự mới gia nhập KÜCHEN? </span>
                         <a href="{{ route('register') }}" class="small fw-bold text-primary text-decoration-none">
-                            Đăng ký vai trò mới
+                            Đăng ký tài khoản nhân viên
                         </a>
                     </div>
                 </div>
@@ -517,6 +557,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Xử lý 1-Click Autofill thông tin tài khoản mẫu
+    const demoFillBtns = document.querySelectorAll('.demo-fill-btn');
+    const noticeBox = document.getElementById('autofillNotice');
+    const noticeText = document.getElementById('autofillNoticeText');
+
+    demoFillBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const email = this.dataset.email;
+            const role = this.dataset.role;
+
+            if (emailInput) {
+                emailInput.value = email;
+                emailInput.classList.remove('is-invalid');
+                emailInput.focus();
+            }
+            if (passwordInput) {
+                passwordInput.value = 'password';
+                passwordInput.classList.remove('is-invalid');
+            }
+
+            if (noticeBox && noticeText) {
+                noticeText.innerHTML = `Đã điền tài khoản <strong>${role}</strong>: <code>${email}</code> (Mật khẩu: <code>password</code>). Nhấn <strong>Đăng nhập hệ thống</strong> để tiếp tục!`;
+                noticeBox.classList.remove('d-none');
+            }
+        });
+    });
 
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
