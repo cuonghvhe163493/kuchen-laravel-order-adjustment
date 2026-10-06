@@ -233,4 +233,30 @@ class ApproveAndRejectAdjustmentTest extends TestCase
         $this->assertEquals(2, $this->item1->fresh()->quantity);
         $this->assertTrue($this->adjustment->fresh()->isPending());
     }
+
+    /**
+     * Tiêu chí An ninh Đa tầng (Defense in Depth): AdjustmentService trực tiếp chặn
+     * vi phạm Four-Eyes kể cả khi không thông qua HTTP Request / Policy Gate.
+     */
+    public function test_service_directly_enforces_four_eyes_principle_preventing_creator_approval(): void
+    {
+        $service = app(\App\Services\AdjustmentService::class);
+
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('Vi phạm nguyên tắc Four-Eyes');
+
+        // Creator tự gọi trực tiếp hàm approveAdjustment của Service
+        $service->approveAdjustment($this->adjustment->id, $this->saleUser->id);
+    }
+
+    public function test_service_directly_enforces_four_eyes_principle_preventing_creator_rejection(): void
+    {
+        $service = app(\App\Services\AdjustmentService::class);
+
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('Vi phạm nguyên tắc Four-Eyes');
+
+        // Creator tự gọi trực tiếp hàm rejectAdjustment của Service
+        $service->rejectAdjustment($this->adjustment->id, 'Lý do từ chối thử nghiệm', $this->saleUser->id);
+    }
 }

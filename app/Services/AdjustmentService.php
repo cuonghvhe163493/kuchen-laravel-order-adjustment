@@ -56,13 +56,23 @@ class AdjustmentService
                 /** @var OrderItem $orderItem */
                 $orderItem = $order->items()->where('id', $itemData['order_item_id'])->firstOrFail();
 
+                $variant = ProductVariant::where('sku', $itemData['new_sku'])->first();
+                if (!$variant) {
+                    throw new DomainException("Mã SKU mới '{$itemData['new_sku']}' không tồn tại trong hệ thống sản phẩm KÜCHEN.");
+                }
+
+                $newQty = (int) $itemData['new_quantity'];
+                if ($newQty < 1) {
+                    throw new DomainException("Số lượng mới cho sản phẩm '{$itemData['new_sku']}' phải là số nguyên dương.");
+                }
+
                 OrderAdjustmentItem::create([
                     'order_adjustment_id' => $adjustment->id,
                     'order_item_id' => $orderItem->id,
                     'old_sku' => $orderItem->sku,
                     'new_sku' => $itemData['new_sku'],
                     'old_quantity' => $orderItem->quantity,
-                    'new_quantity' => (int) $itemData['new_quantity'],
+                    'new_quantity' => $newQty,
                 ]);
             }
 
@@ -89,13 +99,18 @@ class AdjustmentService
                 throw new DomainException("Yêu cầu này đã được xử lý ({$adjustment->status}), không thể phê duyệt lại.");
             }
 
-            // 3. Khóa bản ghi đơn hàng và kiểm tra đơn còn hợp lệ (chưa bị xuất kho/hủy trong lúc chờ duyệt)
+            // 3. Bảo vệ nguyên tắc Four-Eyes (Segregation of Duties - SoD) tại tầng Service
+            if ($adjustment->created_by === $reviewerId) {
+                throw new DomainException('Vi phạm nguyên tắc Four-Eyes: Người tạo yêu cầu không được tự phê duyệt yêu cầu của chính mình.');
+            }
+
+            // 4. Khóa bản ghi đơn hàng và kiểm tra đơn còn hợp lệ (chưa bị xuất kho/hủy trong lúc chờ duyệt)
             $order = Order::where('id', $adjustment->order_id)->lockForUpdate()->firstOrFail();
             if (!$order->canBeAdjusted()) {
                 throw new DomainException("Đơn hàng đã đổi trạng thái ({$order->status}), không còn hợp lệ để phê duyệt.");
             }
 
-            // 4. Cập nhật chính xác các dòng order_items theo chi tiết điều chỉnh
+            // 5. Cập nhật chính xác các dòng order_items theo chi tiết điều chỉnh
             foreach ($adjustment->items as $adjItem) {
                 $orderItem = OrderItem::where('id', $adjItem->order_item_id)->lockForUpdate()->first();
                 if (!$orderItem) {
@@ -115,7 +130,7 @@ class AdjustmentService
                 ]);
             }
 
-            // 5. Cập nhật trạng thái yêu cầu sang APPROVED, lưu người duyệt và thời gian duyệt
+            // 6. Cập nhật trạng thái yêu cầu sang APPROVED, lưu người duyệt và thời gian duyệt
             $adjustment->update([
                 'status' => 'approved',
                 'reviewed_by' => $reviewerId,
@@ -135,8 +150,8 @@ class AdjustmentService
     {
         return DB::transaction(function () use ($adjustmentId, $rejectReason, $reviewerId) {
             $rejectReason = trim($rejectReason);
-            if (empty($rejectReason)) {
-                throw new DomainException('Bắt buộc phải nhập lý do từ chối yêu cầu.');
+            if (empty($rejectReason) || mb_strlen($rejectReason) < 5) {
+                throw new DomainException('Bắt buộc phải nhập lý do từ chối yêu cầu (tối thiểu 5 ký tự).');
             }
 
             // 1. Khóa bi quan bản ghi yêu cầu điều chỉnh
@@ -149,7 +164,12 @@ class AdjustmentService
                 throw new DomainException("Yêu cầu này đã được xử lý ({$adjustment->status}), không thể từ chối lại.");
             }
 
-            // 3. Cập nhật trạng thái sang REJECTED - TUYỆT ĐỐI KHÔNG SỬA ĐƠN HÀNG
+            // 3. Bảo vệ nguyên tắc Four-Eyes tại tầng Service
+            if ($adjustment->created_by === $reviewerId) {
+                throw new DomainException('Vi phạm nguyên tắc Four-Eyes: Người tạo yêu cầu không được tự từ chối yêu cầu của chính mình.');
+            }
+
+            // 4. Cập nhật trạng thái sang REJECTED - TUYỆT ĐỐI KHÔNG SỬA ĐƠN HÀNG
             $adjustment->update([
                 'status' => 'rejected',
                 'rejected_reason' => $rejectReason,

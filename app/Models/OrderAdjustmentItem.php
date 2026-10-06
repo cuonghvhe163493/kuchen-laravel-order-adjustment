@@ -36,4 +36,9 @@ class OrderAdjustmentItem extends Model
     {
         return $this->belongsTo(OrderItem::class, 'order_item_id');
     }
+
+    public function newProductVariant(): BelongsTo
+    {
+        return $this->belongsTo(ProductVariant::class, 'new_sku', 'sku');
+    }
 }

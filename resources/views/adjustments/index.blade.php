@@ -23,22 +23,27 @@
         <div class="card mb-4 border-0 shadow-sm">
             <div class="card-body p-3 d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-3">
                 <div class="d-flex align-items-center">
-                    <div class="btn-group w-100 flex-wrap" role="group">
+                    <div class="d-flex flex-wrap gap-2" role="group">
                         <a href="{{ route('adjustments.index', array_filter(['order_id' => $orderId])) }}" 
-                           class="btn btn-sm {{ $status === '' ? 'btn-primary' : 'btn-outline-secondary' }}">
-                            Tất cả
+                           class="btn btn-sm {{ $status === '' ? 'btn-primary' : 'btn-outline-secondary bg-white' }} px-3 rounded-pill shadow-sm">
+                            Tất cả <span class="badge bg-light text-dark ms-1">{{ $counts['all'] ?? 0 }}</span>
                         </a>
                         <a href="{{ route('adjustments.index', array_filter(['order_id' => $orderId, 'status' => 'pending'])) }}" 
-                           class="btn btn-sm {{ $status === 'pending' ? 'btn-warning text-dark' : 'btn-outline-secondary' }}">
-                            Chờ duyệt
+                           class="btn btn-sm {{ $status === 'pending' ? 'btn-warning text-dark' : 'btn-outline-secondary bg-white' }} px-3 rounded-pill shadow-sm">
+                            <i class="bi bi-clock-history me-1"></i> Chờ duyệt
+                            @if(($counts['pending'] ?? 0) > 0)
+                                <span class="badge bg-danger text-white ms-1">{{ $counts['pending'] }}</span>
+                            @else
+                                <span class="badge bg-light text-muted ms-1">0</span>
+                            @endif
                         </a>
                         <a href="{{ route('adjustments.index', array_filter(['order_id' => $orderId, 'status' => 'approved'])) }}" 
-                           class="btn btn-sm {{ $status === 'approved' ? 'btn-success' : 'btn-outline-secondary' }}">
-                            Đã duyệt
+                           class="btn btn-sm {{ $status === 'approved' ? 'btn-success text-white' : 'btn-outline-secondary bg-white' }} px-3 rounded-pill shadow-sm">
+                            <i class="bi bi-check2-circle me-1"></i> Đã duyệt <span class="badge bg-light text-dark ms-1">{{ $counts['approved'] ?? 0 }}</span>
                         </a>
                         <a href="{{ route('adjustments.index', array_filter(['order_id' => $orderId, 'status' => 'rejected'])) }}" 
-                           class="btn btn-sm {{ $status === 'rejected' ? 'btn-danger' : 'btn-outline-secondary' }}">
-                            Đã từ chối
+                           class="btn btn-sm {{ $status === 'rejected' ? 'btn-danger text-white' : 'btn-outline-secondary bg-white' }} px-3 rounded-pill shadow-sm">
+                            <i class="bi bi-x-circle me-1"></i> Đã từ chối <span class="badge bg-light text-dark ms-1">{{ $counts['rejected'] ?? 0 }}</span>
                         </a>
                     </div>
                 </div>

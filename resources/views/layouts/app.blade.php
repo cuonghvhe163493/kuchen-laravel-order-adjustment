@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'KÜCHEN ENTERPRISE - Hệ thống Quản trị & Điều phối Đơn hàng')</title>
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +14,9 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         :root {
             --color-primary: #2563eb;
             --color-primary-hover: #1d4ed8;
@@ -23,6 +27,14 @@
             --color-card: #ffffff;
             --color-border: #e2e8f0;
             --color-muted: #64748b;
+        }
+        @media (min-width: 992px) {
+            .w-lg-auto {
+                width: auto !important;
+            }
+        }
+        .border-slate-200 {
+            border-color: #e2e8f0 !important;
         }
         body {
             background-color: var(--color-background);
@@ -282,8 +294,14 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('adjustments.*') ? 'active' : '' }}" href="{{ route('adjustments.index') }}">
-                                <i class="bi bi-arrow-left-right me-1 text-primary"></i> Yêu cầu điều chỉnh
+                            <a class="nav-link {{ request()->routeIs('adjustments.*') ? 'active' : '' }} d-inline-flex align-items-center" href="{{ route('adjustments.index') }}">
+                                <i class="bi bi-arrow-left-right me-1 text-primary"></i>
+                                <span>Yêu cầu điều chỉnh</span>
+                                @if(($globalPendingAdjustmentsCount ?? 0) > 0)
+                                    <span class="badge bg-danger rounded-pill ms-2 px-2 py-1 shadow-sm" style="font-size: 0.68rem;" title="Có {{ $globalPendingAdjustmentsCount }} yêu cầu chờ xử lý">
+                                        {{ $globalPendingAdjustmentsCount }} chờ duyệt
+                                    </span>
+                                @endif
                             </a>
                         </li>
                         <li class="nav-item">

@@ -46,5 +46,14 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('system.manage', function (User $user) {
             return $user->hasPermission('system.manage');
         });
+
+        // View Composer tự động chia sẻ số lượng yêu cầu chờ duyệt cho Header Layout
+        view()->composer('layouts.app', function ($view) {
+            $pendingCount = 0;
+            if (auth()->check()) {
+                $pendingCount = OrderAdjustment::where('status', 'pending')->count();
+            }
+            $view->with('globalPendingAdjustmentsCount', $pendingCount);
+        });
     }
 }

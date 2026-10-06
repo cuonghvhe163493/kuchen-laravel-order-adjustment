@@ -60,6 +60,12 @@ class User extends Authenticatable
      */
     public function allPermissions(): Collection
     {
+        if ($this->relationLoaded('roles')) {
+            return $this->roles
+                ->flatMap(fn ($role) => $role->relationLoaded('permissions') ? $role->permissions : $role->permissions()->get())
+                ->unique('name');
+        }
+
         return $this->roles()
             ->with('permissions')
             ->get()

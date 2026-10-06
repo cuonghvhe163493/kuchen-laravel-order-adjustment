@@ -178,9 +178,10 @@
                         <tr>
                             <th style="width: 8%;">ID</th>
                             <th style="width: 25%;">Họ và tên nhân sự</th>
-                            <th style="width: 25%;">Email công vụ</th>
-                            <th style="width: 20%;">Vai trò trong DB</th>
-                            <th style="width: 22%;">Quyền hạn sở hữu</th>
+                            <th style="width: 20%;">Email công vụ</th>
+                            <th style="width: 18%;">Vai trò trong DB</th>
+                            <th style="width: 18%;">Quyền hạn sở hữu</th>
+                            <th style="width: 14%;" class="text-end">Thao tác thử nghiệm</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -216,6 +217,20 @@
                                     <span class="badge bg-light text-dark border">
                                         <i class="bi bi-shield-check text-success me-1"></i>{{ $userPermCount }} quyền trong DB
                                     </span>
+                                </td>
+                                <td class="text-end">
+                                    @if(auth()->id() !== $u->id)
+                                        <a href="{{ route('user.switch', ['role' => $u->role, 'redirect' => 'roles']) }}" 
+                                           class="btn btn-sm btn-outline-primary py-1 px-2 shadow-none" 
+                                           style="font-size: 0.72rem;"
+                                           title="Chuyển sang tài khoản với vai trò {{ $u->role }}">
+                                            <i class="bi bi-arrow-repeat me-1"></i>Đóng vai {{ strtoupper($u->role) }}
+                                        </a>
+                                    @else
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle" style="font-size: 0.72rem;">
+                                            <i class="bi bi-person-check me-1"></i>Hiện tại
+                                        </span>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

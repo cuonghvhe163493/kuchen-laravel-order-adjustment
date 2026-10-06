@@ -6,6 +6,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class RolePermissionController extends Controller
@@ -15,9 +16,11 @@ class RolePermissionController extends Controller
      */
     public function index(Request $request): View
     {
+        Gate::authorize('role.view');
+
         $roles = Role::with('permissions')->get();
         $permissions = Permission::all()->groupBy('module');
-        $users = User::with('roles')->orderBy('id', 'asc')->get();
+        $users = User::with('roles.permissions')->orderBy('id', 'asc')->get();
 
         return view('roles.index', [
             'roles' => $roles,

@@ -48,7 +48,14 @@ class AdjustmentController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        return view('adjustments.index', compact('adjustments', 'status', 'orderId'));
+        $counts = [
+            'all' => OrderAdjustment::when($orderId !== '', fn($q) => $q->where('order_id', $orderId))->count(),
+            'pending' => OrderAdjustment::when($orderId !== '', fn($q) => $q->where('order_id', $orderId))->where('status', 'pending')->count(),
+            'approved' => OrderAdjustment::when($orderId !== '', fn($q) => $q->where('order_id', $orderId))->where('status', 'approved')->count(),
+            'rejected' => OrderAdjustment::when($orderId !== '', fn($q) => $q->where('order_id', $orderId))->where('status', 'rejected')->count(),
+        ];
+
+        return view('adjustments.index', compact('adjustments', 'status', 'orderId', 'counts'));
     }
 
     /**
